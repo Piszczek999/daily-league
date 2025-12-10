@@ -43,7 +43,9 @@
 		"@auth/mongodb-adapter": "^3.11.1",
 		"@auth/prisma-adapter": "^2.11.1",
 		"@auth/sveltekit": "^1.11.1",
+		"@lucide/svelte": "^0.556.0",
 		"@prisma/client": "^6.18.0",
+		"bits-ui": "^2.14.4",
 		"mongodb": "^6.20.0"
 	}
 }

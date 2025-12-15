@@ -15,47 +15,163 @@ datasource db {
 }
 
 model User {
-    id            String    @id @default(auto()) @map("_id") @db.ObjectId
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
+    id            String  @id @map("_id")
+    name          String
+    email         String
+    emailVerified Boolean @default(false)
     image         String?
-    accounts      Account[]
-    sessions      Session[]
-}
 
-model Account {
-    id                String  @id @default(auto()) @map("_id") @db.ObjectId
-    userId            String  @db.ObjectId
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? @db.String
-    access_token      String? @db.String
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? @db.String
-    session_state     String?
+    isLinked      Boolean  @default(false)
+    profileIconId Int?
+    puuid         String?
+    gameName      String?
+    tagLine       String?
+    platform      String?
+    tasks         Task[]
+    lastUpdatedAt DateTime @default(now())
 
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    sessions  Session[]
+    accounts  Account[]
 
-    @@unique([provider, providerAccountId])
+    @@unique([email])
+    @@map("user")
 }
 
 model Session {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
-    sessionToken String   @unique
-    userId       String   @db.ObjectId
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id        String   @id @map("_id")
+    expiresAt DateTime
+    token     String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    ipAddress String?
+    userAgent String?
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([token])
+    @@index([userId])
+    @@map("session")
 }
 
-model VerificationToken {
-    id         String   @id @default(auto()) @map("_id") @db.ObjectId
-    identifier String
-    token      String   @unique
-    expires    DateTime
+model Account {
+    id                    String    @id @map("_id")
+    accountId             String
+    providerId            String
+    userId                String
+    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accessToken           String?
+    refreshToken          String?
+    idToken               String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
 
-    @@unique([identifier, token])
+    @@index([userId])
+    @@map("account")
+}
+
+model Verification {
+    id         String   @id @map("_id")
+    identifier String
+    value      String
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@index([identifier])
+    @@map("verification")
+}
+
+type Task {
+    id           String
+    assignedDate DateTime
+    status       String
+}
+
+model Match {
+    id       String    @id @map("_id") @db.ObjectId
+    metadata Metadata
+    info     MatchInfo
+
+    @@map("match")
+}
+
+type Metadata {
+    dataVersion  String
+    matchId      String
+    participants String[]
+}
+
+type MatchInfo {
+    endOfGameResult    String
+    gameCreation       BigInt
+    gameDuration       Int
+    gameEndTimestamp   BigInt
+    gameId             BigInt
+    gameMode           String
+    gameName           String
+    gameStartTimestamp BigInt
+    gameType           String
+    gameVersion        String
+    mapId              Int
+
+    // participants are huge and highly variable → Json array
+    participants Json[]
+
+    platformId     String
+    queueId        Int
+    teams          Team[]
+    tournamentCode String
+}
+
+// Team data
+
+type Team {
+    bans       Ban[]
+    feats      Feats
+    objectives Objectives
+    teamId     Int
+    win        Boolean
+}
+
+// Ban entries
+
+type Ban {
+    championId Int
+    pickTurn   Int
+}
+
+// Feats object with named keys
+
+type Feats {
+    EPIC_MONSTER_KILL FeatState
+    FIRST_BLOOD       FeatState
+    FIRST_TURRET      FeatState
+}
+
+type FeatState {
+    featState Int
+}
+
+// Objectives object containing each category
+
+type Objectives {
+    atakhan    ObjectiveValues
+    baron      ObjectiveValues
+    champion   ObjectiveValues
+    dragon     ObjectiveValues
+    horde      ObjectiveValues
+    inhibitor  ObjectiveValues
+    riftHerald ObjectiveValues
+    tower      ObjectiveValues
+}
+
+type ObjectiveValues {
+    first Boolean
+    kills Int
 }

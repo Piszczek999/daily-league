@@ -3,17 +3,10 @@
 
 	type Props = WithoutChildrenOrChild<Avatar.RootProps> & {
 		src: string | undefined | null;
-		alt: string;
 		imageRef?: HTMLImageElement | null;
 	};
 
-	let {
-		src,
-		alt,
-		ref = $bindable(null),
-		imageRef = $bindable(null),
-		...restProps
-	}: Props = $props();
+	let { src, ref = $bindable(null), imageRef = $bindable(null), ...restProps }: Props = $props();
 </script>
 
 <Avatar.Root
@@ -21,5 +14,5 @@
 	{...restProps}
 	bind:ref
 >
-	<Avatar.Image {src} {alt} bind:ref={imageRef} />
+	<Avatar.Image {src} alt="Avatar" bind:ref={imageRef} />
 </Avatar.Root>

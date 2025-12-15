@@ -2,27 +2,24 @@
 @import 'tailwindcss';
 
 @theme {
-	--color-ocean-100: #caf0f8;
-	--color-ocean-200: #ade8f4;
-	--color-ocean-300: #90e0ef;
-	--color-ocean-400: #48cae4;
-	--color-ocean-500: #00b4d8;
-	--color-ocean-600: #0096c7;
-	--color-ocean-700: #0077b6;
-	--color-ocean-800: #023e8a;
-	--color-ocean-900: #03045e;
 	--font-oxanium: 'Oxanium', serif;
 	--font-cinzel: 'Cinzel', serif;
 	--font-anton: 'Anton', serif;
-	--shadow-card: 0 0 100px 0px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+	--shadow-glow-sm: 0 0 100px -10px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+	--shadow-glow: 0 0 100px 0px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+	--shadow-glow-lg: 0 0 100px 5px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+	--shadow-glow-xl: 0 0 100px 10px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
 	--animate-wiggle: wiggle 5s ease-in-out infinite;
 
 	@keyframes wiggle {
 		0%,
 		100% {
+			transform: rotateY(0deg);
+		}
+		33% {
 			transform: rotateY(3deg);
 		}
-		50% {
+		66% {
 			transform: rotateY(-3deg);
 		}
 	}

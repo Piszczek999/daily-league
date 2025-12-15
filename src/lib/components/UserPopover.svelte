@@ -1,32 +1,28 @@
 <script lang="ts">
-	import { Separator, type WithoutChildrenOrChild } from 'bits-ui';
+	import { type WithoutChildrenOrChild } from 'bits-ui';
 	import { Popover } from 'bits-ui';
-	import { fly, slide } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
 	import UserAvatar from './UserAvatar.svelte';
-	import Button from './Button.svelte';
-	import type { User } from '@auth/sveltekit';
-	import { signOut } from '@auth/sveltekit/client';
+	import { authClient } from '$lib/auth-client';
+	import { goto } from '$app/navigation';
+	import type { User } from '../../generated/client';
 
 	type Props = WithoutChildrenOrChild<Popover.ContentProps> & {
 		user: User;
-		src: string | undefined | null;
-		alt: string;
 		avatarRef?: HTMLElement | null;
 	};
 
-	let {
-		user,
-		src,
-		alt,
-		ref = $bindable(null),
-		avatarRef = $bindable(null),
-		...restProps
-	}: Props = $props();
+	let { user, ref = $bindable(null), avatarRef = $bindable(null), ...restProps }: Props = $props();
 </script>
 
 <Popover.Root>
 	<Popover.Trigger>
-		<UserAvatar {src} {alt} bind:ref={avatarRef} />
+		<UserAvatar
+			src={user.isLinked
+				? `https://ddragon.leagueoflegends.com/cdn/15.24.1/img/profileicon/${user.profileIconId}.png`
+				: user.image}
+			bind:ref={avatarRef}
+		/>
 	</Popover.Trigger>
 	<Popover.Portal>
 		<Popover.Content forceMount bind:ref {...restProps}>
@@ -43,10 +39,23 @@
 								<span>{user.name}</span>
 								<span class="text-xs text-zinc-400">{user.email}</span>
 							</div>
+							{#if user.isLinked}
+								<div class="flex justify-center p-2">
+									<span>{user.gameName}</span><span class="text-zinc-400">#{user.tagLine}</span>
+								</div>
+							{/if}
 							<!-- Buttons -->
 							<div class="flex flex-col py-2 text-sm">
-								<button onclick={() => signOut()} class="cursor-pointer p-1 hover:bg-zinc-700"
-									>Sign Out</button
+								<button
+									onclick={() =>
+										authClient.signOut({
+											fetchOptions: {
+												onSuccess: () => {
+													goto('/');
+												}
+											}
+										})}
+									class="cursor-pointer p-1 hover:bg-zinc-700">Sign Out</button
 								>
 							</div>
 						</div>

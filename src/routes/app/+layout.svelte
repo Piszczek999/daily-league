@@ -9,8 +9,8 @@
 	<div class="text-2xl">
 		<a href="/">Daily League</a>
 	</div>
-	<div class="flex items-center gap-2">
-		<UserPopover src={user.image} alt="Profile" {user} />
+	<div class="flex items-center gap-2 rounded-full shadow-glow-lg shadow-white">
+		<UserPopover {user} />
 	</div>
 </nav>
 

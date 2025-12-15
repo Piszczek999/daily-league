@@ -1,13 +1,19 @@
 <script lang="ts">
-	import { Button } from 'bits-ui';
+	import { Button, mergeProps } from 'bits-ui';
 
 	let { children, ...props }: Button.RootProps = $props();
+
+	const mergedProps = $derived(
+		mergeProps(
+			{
+				class: 'cursor-pointer border border-zinc-300 bg-transparent p-1 px-2 uppercase'
+			},
+			props
+		)
+	);
 </script>
 
-<Button.Root
-	class="cursor-pointer rounded-2xl border border-zinc-300 bg-transparent p-1 px-2 text-xs uppercase hover:bg-ocean-700"
-	{...props}
->
+<Button.Root {...mergedProps}>
 	{#if children}
 		{@render children?.()}
 	{:else}

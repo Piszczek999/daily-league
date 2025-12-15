@@ -1,4 +1,73 @@
-export interface PlayerData {
+export interface RiotMatch {
+	metadata: RiotMatchMetadata;
+	info: RiotMatchInfo;
+}
+
+export interface RiotMatchMetadata {
+	dataVersion: string;
+	matchId: string;
+	participants: string[];
+}
+
+export interface RiotMatchInfo {
+	endOfGameResult: string;
+	gameCreation: number;
+	gameDuration: number;
+	gameEndTimestamp: number;
+	gameId: number;
+	gameMode: string;
+	gameName: string;
+	gameStartTimestamp: number;
+	gameType: string;
+	gameVersion: string;
+	mapId: number;
+	participants: RiotPlayerData[];
+	platformId: string;
+	queueId: number;
+	teams: RiotTeamInfo[];
+	tournamentCode: string;
+}
+
+export interface RiotTeamInfo {
+	teamId: 100 | 200;
+	win: boolean;
+	bans: RiotBan[];
+	feats: RiotTeamFeats;
+	objectives: RiotTeamObjectives;
+}
+
+export interface RiotBan {
+	championId: number;
+	pickTurn: number;
+}
+
+export interface RiotTeamFeats {
+	EPIC_MONSTER_KILL: RiotFeatState;
+	FIRST_BLOOD: RiotFeatState;
+	FIRST_TURRET: RiotFeatState;
+}
+
+export interface RiotFeatState {
+	featState: number;
+}
+
+export interface RiotTeamObjectives {
+	atakhan: RiotObjective;
+	baron: RiotObjective;
+	champion: RiotObjective;
+	dragon: RiotObjective;
+	horde: RiotObjective;
+	inhibitor: RiotObjective;
+	riftHerald: RiotObjective;
+	tower: RiotObjective;
+}
+
+export interface RiotObjective {
+	first: boolean;
+	kills: number;
+}
+
+export interface RiotPlayerData {
 	PlayerScore0: number;
 	PlayerScore1: number;
 	PlayerScore2: number;
@@ -18,7 +87,7 @@ export interface PlayerData {
 	baronKills: number;
 	basicPings: number;
 
-	challenges: Challenges;
+	challenges: RiotChallenges;
 
 	champExperience: number;
 	champLevel: number;
@@ -108,7 +177,7 @@ export interface PlayerData {
 	participantId: number;
 	pentaKills: number;
 
-	perks: Perks;
+	perks: RiotPerks;
 
 	physicalDamageDealt: number;
 	physicalDamageDealtToChampions: number;
@@ -200,20 +269,20 @@ export interface PlayerData {
 	win: boolean;
 }
 
-export interface Challenges {
+export interface RiotChallenges {
 	[key: string]: number | number[] | boolean;
 }
 
-export interface Perks {
+export interface RiotPerks {
 	statPerks: {
 		defense: number;
 		flex: number;
 		offense: number;
 	};
-	styles: PerkStyle[];
+	styles: RiotPerkStyle[];
 }
 
-export interface PerkStyle {
+export interface RiotPerkStyle {
 	description: string;
 	selections: {
 		perk: number;
@@ -222,4 +291,48 @@ export interface PerkStyle {
 		var3: number;
 	}[];
 	style: number;
+}
+
+export const PLATFORMS = [
+	'br1',
+	'eun1',
+	'euw1',
+	'jp1',
+	'kr',
+	'la1',
+	'la2',
+	'na1',
+	'oc1',
+	'tr1',
+	'ru',
+	'ph2',
+	'sg2',
+	'th2',
+	'tw2',
+	'vn2'
+] as const;
+
+export const REGIONS = ['americas', 'asia', 'europe', 'sea'] as const;
+
+export type Platform = (typeof PLATFORMS)[number];
+
+export type Region = (typeof REGIONS)[number];
+
+export interface RiotAccount {
+	puuid: string;
+	gameName: string;
+	tagLine: string;
+}
+
+export interface RiotSummoner {
+	profileIconId: number;
+	revisionDate: number;
+	puuid: string;
+	summonerLevel: number;
+}
+
+export interface RiotActiveRegion {
+	puuid: string;
+	game: 'lol' | 'tft';
+	region: Platform;
 }

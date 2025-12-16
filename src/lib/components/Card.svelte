@@ -48,14 +48,14 @@
 		class="relative rounded-lg border-4 transition-transform duration-300 ease-out hover:translate-z-5 hover:animate-wiggle {colors.card} {className}"
 		{...props}
 	>
-		<Eye class="absolute top-1/2 left-1/2 size-32 -translate-1/2 text-black opacity-10" />
-		<div class="relative {colors.divide} flex h-full flex-col divide-y text-white">
+		<Eye class="absolute top-1/2 left-1/2 size-24 -translate-1/2 text-black opacity-10" />
+		<div class="relative {colors.divide} flex h-full flex-col divide-y text-sm text-white">
 			<!-- Title -->
 			<div class="flex-center p-2">
 				<span class="text-center font-bold tracking-wider text-shadow-md">{title}</span>
 			</div>
 			<!-- Description -->
-			<div class="flex-center h-full p-2">
+			<div class="flex-center h-full bg-black/10 p-2">
 				<span class="text-center text-shadow-md">{description}</span>
 			</div>
 			<!-- Progress -->

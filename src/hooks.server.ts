@@ -9,9 +9,15 @@ export async function handle({ event, resolve }) {
 			headers: event.request.headers
 		});
 		if (!session) redirect(307, '/sign-in');
-
 		event.locals.session = session.session;
 		event.locals.user = session.user;
+
+		if (event.url.pathname !== '/app/riotid' && !session.user.puuid) {
+			redirect(303, '/app/riotid');
+		}
+
+		return svelteKitHandler({ event, resolve, auth, building });
+	} else {
+		return svelteKitHandler({ event, resolve, auth, building });
 	}
-	return svelteKitHandler({ event, resolve, auth, building });
 }

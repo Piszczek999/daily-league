@@ -1,8 +1,7 @@
 <script lang="ts">
 	import UserPopover from '$lib/components/UserPopover.svelte';
 
-	let { children, data } = $props();
-	let { user } = $derived(data);
+	let { children } = $props();
 </script>
 
 <nav class="absolute top-0 flex w-full items-center justify-between gap-4 p-4 px-8">
@@ -10,7 +9,7 @@
 		<a href="/">Daily League</a>
 	</div>
 	<div class="flex items-center gap-2 rounded-full shadow-glow-lg shadow-white">
-		<UserPopover {user} />
+		<UserPopover />
 	</div>
 </nav>
 

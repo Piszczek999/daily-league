@@ -152,10 +152,13 @@ async function getAccountByPuuid(puuid: string): Promise<RiotAccount | null> {
  * @param gameName - In-game name
  * @param tagLine - Tag line (e.g., "NA1")
  */
-async function getAccountByRiotId(gameName: string, tagLine: string): Promise<RiotAccount | null> {
+async function getAccountByRiotId(inputs: {
+	gameName: string;
+	tagLine: string;
+}): Promise<RiotAccount | null> {
 	// URL encode parameters to handle special characters
-	const encodedGameName = encodeURIComponent(gameName);
-	const encodedTagLine = encodeURIComponent(tagLine);
+	const encodedGameName = encodeURIComponent(inputs.gameName);
+	const encodedTagLine = encodeURIComponent(inputs.tagLine);
 
 	return riotFetch<RiotAccount>(
 		'europe',

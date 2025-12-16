@@ -21,7 +21,6 @@ model User {
     emailVerified Boolean @default(false)
     image         String?
 
-    isLinked      Boolean  @default(false)
     profileIconId Int?
     puuid         String?
     gameName      String?

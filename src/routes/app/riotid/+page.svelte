@@ -1,11 +1,10 @@
 <script>
-	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
+	import { updateRiotId } from '$lib/api/user.remote';
 	import Button from '$lib/components/Button.svelte';
-	import { PLATFORMS } from '$lib/types/riotTypes';
 </script>
 
-<form method="POST" use:enhance>
+<form {...updateRiotId}>
 	<div class="flex flex-col items-center gap-2 divide-y divide-zinc-700 bg-zinc-800 p-4 shadow-lg">
 		<h1 class="py-6 text-center text-xl">Connect your existing<br /> League of Legends summoner</h1>
 		{#if page.form?.errors}

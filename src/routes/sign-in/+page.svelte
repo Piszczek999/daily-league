@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { authClient } from '$lib/auth-client';
+	import { signIn } from '$lib/auth-client';
 </script>
 
 <button
 	class="w-full"
 	onclick={() => {
-		authClient.signIn.social({
+		signIn.social({
 			provider: 'github',
 			callbackURL: '/app'
 		});

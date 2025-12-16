@@ -3,22 +3,22 @@
 	import { Popover } from 'bits-ui';
 	import { slide } from 'svelte/transition';
 	import UserAvatar from './UserAvatar.svelte';
-	import { authClient } from '$lib/auth-client';
+	import { signOut } from '$lib/auth-client';
 	import { goto } from '$app/navigation';
-	import type { User } from '../../generated/client';
+	import { getUser } from '$lib/api/user.remote';
 
 	type Props = WithoutChildrenOrChild<Popover.ContentProps> & {
-		user: User;
 		avatarRef?: HTMLElement | null;
 	};
 
-	let { user, ref = $bindable(null), avatarRef = $bindable(null), ...restProps }: Props = $props();
+	let { ref = $bindable(null), avatarRef = $bindable(null), ...restProps }: Props = $props();
+	let user = await getUser();
 </script>
 
 <Popover.Root>
 	<Popover.Trigger>
 		<UserAvatar
-			src={user.isLinked
+			src={user.puuid
 				? `https://ddragon.leagueoflegends.com/cdn/15.24.1/img/profileicon/${user.profileIconId}.png`
 				: user.image}
 			bind:ref={avatarRef}
@@ -39,7 +39,7 @@
 								<span>{user.name}</span>
 								<span class="text-xs text-zinc-400">{user.email}</span>
 							</div>
-							{#if user.isLinked}
+							{#if user.puuid}
 								<div class="flex justify-center p-2">
 									<span>{user.gameName}</span><span class="text-zinc-400">#{user.tagLine}</span>
 								</div>
@@ -48,7 +48,7 @@
 							<div class="flex flex-col py-2 text-sm">
 								<button
 									onclick={() =>
-										authClient.signOut({
+										signOut({
 											fetchOptions: {
 												onSuccess: () => {
 													goto('/');

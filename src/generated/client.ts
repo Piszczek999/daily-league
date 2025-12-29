@@ -45,55 +45,20 @@ path.join(__dirname, "query_engine-windows.dll.node")
 path.join(process.cwd(), "src/generated/query_engine-windows.dll.node")
 
 /**
- * Model Task
- * 
- */
-export type Task = Prisma.TaskModel
-/**
- * Model Metadata
- * 
- */
-export type Metadata = Prisma.MetadataModel
-/**
- * Model MatchInfo
- * 
- */
-export type MatchInfo = Prisma.MatchInfoModel
-/**
- * Model Team
- * 
- */
-export type Team = Prisma.TeamModel
-/**
- * Model Ban
- * 
- */
-export type Ban = Prisma.BanModel
-/**
- * Model Feats
- * 
- */
-export type Feats = Prisma.FeatsModel
-/**
- * Model FeatState
- * 
- */
-export type FeatState = Prisma.FeatStateModel
-/**
- * Model Objectives
- * 
- */
-export type Objectives = Prisma.ObjectivesModel
-/**
- * Model ObjectiveValues
- * 
- */
-export type ObjectiveValues = Prisma.ObjectiveValuesModel
-/**
  * Model User
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Match
+ * 
+ */
+export type Match = Prisma.MatchModel
+/**
+ * Model Challenge
+ * 
+ */
+export type Challenge = Prisma.ChallengeModel
 /**
  * Model Session
  * 
@@ -109,8 +74,3 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Verification = Prisma.VerificationModel
-/**
- * Model Match
- * 
- */
-export type Match = Prisma.MatchModel

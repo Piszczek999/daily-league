@@ -1,16 +1,15 @@
 <script>
-	import { page } from '$app/state';
-	import { updateRiotId } from '$lib/api/user.remote';
+	import { updateRiotId } from '../user.remote';
 	import Button from '$lib/components/Button.svelte';
 </script>
 
 <form {...updateRiotId}>
 	<div class="flex flex-col items-center gap-2 divide-y divide-zinc-700 bg-zinc-800 p-4 shadow-lg">
 		<h1 class="py-6 text-center text-xl">Connect your existing<br /> League of Legends summoner</h1>
-		{#if page.form?.errors}
+		{#if updateRiotId.fields.allIssues()}
 			<div class="flex flex-col p-2 text-red-400">
-				{#each page.form.errors as error}
-					<span>{error}</span>
+				{#each updateRiotId.fields.allIssues() as issue}
+					<span>{issue.message}</span>
 				{/each}
 			</div>
 		{/if}

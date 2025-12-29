@@ -17,25 +17,55 @@ datasource db {
 model User {
     id            String  @id @map("_id")
     name          String
-    email         String
+    email         String  @unique
     emailVerified Boolean @default(false)
     image         String?
 
     profileIconId Int?
-    puuid         String?
+    puuid         String?     @unique
     gameName      String?
     tagLine       String?
     platform      String?
-    tasks         Task[]
-    lastUpdatedAt DateTime @default(now())
+    region        String?
+    lastUpdatedAt Int?
+    challenges    Challenge[]
+    xp            Int         @default(0) // 5 * level^3 + 50 * level^2 + 150 * level
+    level         Int         @default(1)
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     sessions  Session[]
     accounts  Account[]
 
-    @@unique([email])
     @@map("user")
+}
+
+model Match {
+    id               String @id @default(auto()) @map("_id") @db.ObjectId
+    matchId          String
+    gameEndTimestamp Int
+    data             Json
+
+    @@index([matchId])
+    @@map("match")
+}
+
+enum ChallengeMode {
+    daily
+    weekly
+}
+
+model Challenge {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    userPuuid String
+    user      User   @relation(fields: [userPuuid], references: [puuid])
+
+    challengeId String
+    fromTime    Int
+    toTime      Int
+    progress    Int     @default(0)
+    collectable Boolean @default(false)
+    completed   Boolean @default(false)
 }
 
 model Session {
@@ -84,93 +114,4 @@ model Verification {
 
     @@index([identifier])
     @@map("verification")
-}
-
-type Task {
-    id           String
-    assignedDate DateTime
-    status       String
-}
-
-model Match {
-    id       String    @id @map("_id") @db.ObjectId
-    metadata Metadata
-    info     MatchInfo
-
-    @@map("match")
-}
-
-type Metadata {
-    dataVersion  String
-    matchId      String
-    participants String[]
-}
-
-type MatchInfo {
-    endOfGameResult    String
-    gameCreation       BigInt
-    gameDuration       Int
-    gameEndTimestamp   BigInt
-    gameId             BigInt
-    gameMode           String
-    gameName           String
-    gameStartTimestamp BigInt
-    gameType           String
-    gameVersion        String
-    mapId              Int
-
-    // participants are huge and highly variable → Json array
-    participants Json[]
-
-    platformId     String
-    queueId        Int
-    teams          Team[]
-    tournamentCode String
-}
-
-// Team data
-
-type Team {
-    bans       Ban[]
-    feats      Feats
-    objectives Objectives
-    teamId     Int
-    win        Boolean
-}
-
-// Ban entries
-
-type Ban {
-    championId Int
-    pickTurn   Int
-}
-
-// Feats object with named keys
-
-type Feats {
-    EPIC_MONSTER_KILL FeatState
-    FIRST_BLOOD       FeatState
-    FIRST_TURRET      FeatState
-}
-
-type FeatState {
-    featState Int
-}
-
-// Objectives object containing each category
-
-type Objectives {
-    atakhan    ObjectiveValues
-    baron      ObjectiveValues
-    champion   ObjectiveValues
-    dragon     ObjectiveValues
-    horde      ObjectiveValues
-    inhibitor  ObjectiveValues
-    riftHerald ObjectiveValues
-    tower      ObjectiveValues
-}
-
-type ObjectiveValues {
-    first Boolean
-    kills Int
 }

@@ -8,18 +8,10 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/Task'
-export type * from './models/Metadata'
-export type * from './models/MatchInfo'
-export type * from './models/Team'
-export type * from './models/Ban'
-export type * from './models/Feats'
-export type * from './models/FeatState'
-export type * from './models/Objectives'
-export type * from './models/ObjectiveValues'
 export type * from './models/User'
+export type * from './models/Match'
+export type * from './models/Challenge'
 export type * from './models/Session'
 export type * from './models/Account'
 export type * from './models/Verification'
-export type * from './models/Match'
 export type * from './commonInputTypes'

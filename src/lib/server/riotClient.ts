@@ -7,6 +7,7 @@ import type {
 	RiotMatch,
 	RiotSummoner
 } from '$lib/types/riotTypes';
+import type { PrismaUser } from './prisma';
 
 // Configuration constants
 const BASE_URL = 'api.riotgames.com';
@@ -171,8 +172,10 @@ async function getAccountByRiotId(inputs: {
  * @param matchId - Match identifier
  * @param region - Regional routing value
  */
-async function getMatch(matchId: string, region: Region): Promise<RiotMatch | null> {
-	return riotFetch<RiotMatch>(region, `/lol/match/v5/matches/${matchId}`);
+async function getMatch(matchId: string, region: Region): Promise<RiotMatch> {
+	const match = await riotFetch<RiotMatch>(region, `/lol/match/v5/matches/${matchId}`);
+	if (!match) throw new Error(`Match not found for id: ${matchId}`);
+	return match;
 }
 
 /**
@@ -188,8 +191,7 @@ async function getMatch(matchId: string, region: Region): Promise<RiotMatch | nu
  * @param options.endTime - End of time range (epoch seconds).
  */
 async function getListOfMatchIds(
-	puuid: string,
-	region: Region,
+	user: PrismaUser,
 	options?: {
 		count?: number;
 		start?: number;
@@ -198,19 +200,22 @@ async function getListOfMatchIds(
 		startTime?: number;
 		endTime?: number;
 	}
-): Promise<string[] | null> {
+): Promise<string[]> {
+	if (!user.puuid) throw new Error();
+
 	const params = new URLSearchParams();
 	if (options?.count !== undefined) params.append('count', options.count.toString());
 	if (options?.start !== undefined) params.append('start', options.start.toString());
 	if (options?.type !== undefined) params.append('type', options.type.toString());
 	if (options?.queue !== undefined) params.append('queue', options.queue.toString());
-	if (options?.endTime !== undefined) params.append('endTime', options.endTime.toString());
-	if (options?.startTime !== undefined) params.append('startTime', options.startTime.toString());
+	if (options?.endTime !== undefined) params.append('endTime', (options.endTime / 1000).toString());
+	if (options?.startTime !== undefined)
+		params.append('startTime', (options.startTime / 1000).toString());
 
 	const queryString = params.toString();
-	const path = `/lol/match/v5/matches/by-puuid/${puuid}/ids${queryString ? `?${queryString}` : ''}`;
+	const path = `/lol/match/v5/matches/by-puuid/${user.puuid}/ids${queryString ? `?${queryString}` : ''}`;
 
-	return riotFetch<string[]>(region, path);
+	return (await riotFetch<string[]>(user.region, path)) ?? [];
 }
 
 /**

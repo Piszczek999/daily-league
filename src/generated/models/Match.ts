@@ -20,34 +20,66 @@ export type MatchModel = runtime.Types.Result.DefaultSelection<Prisma.$MatchPayl
 
 export type AggregateMatch = {
   _count: MatchCountAggregateOutputType | null
+  _avg: MatchAvgAggregateOutputType | null
+  _sum: MatchSumAggregateOutputType | null
   _min: MatchMinAggregateOutputType | null
   _max: MatchMaxAggregateOutputType | null
 }
 
+export type MatchAvgAggregateOutputType = {
+  gameEndTimestamp: number | null
+}
+
+export type MatchSumAggregateOutputType = {
+  gameEndTimestamp: number | null
+}
+
 export type MatchMinAggregateOutputType = {
   id: string | null
+  matchId: string | null
+  gameEndTimestamp: number | null
 }
 
 export type MatchMaxAggregateOutputType = {
   id: string | null
+  matchId: string | null
+  gameEndTimestamp: number | null
 }
 
 export type MatchCountAggregateOutputType = {
   id: number
+  matchId: number
+  gameEndTimestamp: number
+  data: number
   _all: number
 }
 
 
+export type MatchAvgAggregateInputType = {
+  gameEndTimestamp?: true
+}
+
+export type MatchSumAggregateInputType = {
+  gameEndTimestamp?: true
+}
+
 export type MatchMinAggregateInputType = {
   id?: true
+  matchId?: true
+  gameEndTimestamp?: true
 }
 
 export type MatchMaxAggregateInputType = {
   id?: true
+  matchId?: true
+  gameEndTimestamp?: true
 }
 
 export type MatchCountAggregateInputType = {
   id?: true
+  matchId?: true
+  gameEndTimestamp?: true
+  data?: true
   _all?: true
 }
 
@@ -89,6 +121,18 @@ export type MatchAggregateArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: MatchAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: MatchSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: MatchMinAggregateInputType
@@ -119,13 +163,20 @@ export type MatchGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   _count?: MatchCountAggregateInputType | true
+  _avg?: MatchAvgAggregateInputType
+  _sum?: MatchSumAggregateInputType
   _min?: MatchMinAggregateInputType
   _max?: MatchMaxAggregateInputType
 }
 
 export type MatchGroupByOutputType = {
   id: string
+  matchId: string
+  gameEndTimestamp: number
+  data: runtime.JsonValue
   _count: MatchCountAggregateOutputType | null
+  _avg: MatchAvgAggregateOutputType | null
+  _sum: MatchSumAggregateOutputType | null
   _min: MatchMinAggregateOutputType | null
   _max: MatchMaxAggregateOutputType | null
 }
@@ -150,14 +201,16 @@ export type MatchWhereInput = {
   OR?: Prisma.MatchWhereInput[]
   NOT?: Prisma.MatchWhereInput | Prisma.MatchWhereInput[]
   id?: Prisma.StringFilter<"Match"> | string
-  metadata?: Prisma.XOR<Prisma.MetadataCompositeFilter, Prisma.MetadataObjectEqualityInput>
-  info?: Prisma.XOR<Prisma.MatchInfoCompositeFilter, Prisma.MatchInfoObjectEqualityInput>
+  matchId?: Prisma.StringFilter<"Match"> | string
+  gameEndTimestamp?: Prisma.IntFilter<"Match"> | number
+  data?: Prisma.JsonFilter<"Match">
 }
 
 export type MatchOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  metadata?: Prisma.MetadataOrderByInput
-  info?: Prisma.MatchInfoOrderByInput
+  matchId?: Prisma.SortOrder
+  gameEndTimestamp?: Prisma.SortOrder
+  data?: Prisma.SortOrder
 }
 
 export type MatchWhereUniqueInput = Prisma.AtLeast<{
@@ -165,15 +218,21 @@ export type MatchWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.MatchWhereInput | Prisma.MatchWhereInput[]
   OR?: Prisma.MatchWhereInput[]
   NOT?: Prisma.MatchWhereInput | Prisma.MatchWhereInput[]
-  metadata?: Prisma.XOR<Prisma.MetadataCompositeFilter, Prisma.MetadataObjectEqualityInput>
-  info?: Prisma.XOR<Prisma.MatchInfoCompositeFilter, Prisma.MatchInfoObjectEqualityInput>
+  matchId?: Prisma.StringFilter<"Match"> | string
+  gameEndTimestamp?: Prisma.IntFilter<"Match"> | number
+  data?: Prisma.JsonFilter<"Match">
 }, "id">
 
 export type MatchOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  matchId?: Prisma.SortOrder
+  gameEndTimestamp?: Prisma.SortOrder
+  data?: Prisma.SortOrder
   _count?: Prisma.MatchCountOrderByAggregateInput
+  _avg?: Prisma.MatchAvgOrderByAggregateInput
   _max?: Prisma.MatchMaxOrderByAggregateInput
   _min?: Prisma.MatchMinOrderByAggregateInput
+  _sum?: Prisma.MatchSumOrderByAggregateInput
 }
 
 export type MatchScalarWhereWithAggregatesInput = {
@@ -181,135 +240,113 @@ export type MatchScalarWhereWithAggregatesInput = {
   OR?: Prisma.MatchScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MatchScalarWhereWithAggregatesInput | Prisma.MatchScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Match"> | string
+  matchId?: Prisma.StringWithAggregatesFilter<"Match"> | string
+  gameEndTimestamp?: Prisma.IntWithAggregatesFilter<"Match"> | number
+  data?: Prisma.JsonWithAggregatesFilter<"Match">
 }
 
 export type MatchCreateInput = {
-  id: string
-  metadata: Prisma.XOR<Prisma.MetadataCreateEnvelopeInput, Prisma.MetadataCreateInput>
-  info: Prisma.XOR<Prisma.MatchInfoCreateEnvelopeInput, Prisma.MatchInfoCreateInput>
+  id?: string
+  matchId: string
+  gameEndTimestamp: number
+  data: runtime.InputJsonValue
 }
 
 export type MatchUncheckedCreateInput = {
-  id: string
-  metadata: Prisma.XOR<Prisma.MetadataCreateEnvelopeInput, Prisma.MetadataCreateInput>
-  info: Prisma.XOR<Prisma.MatchInfoCreateEnvelopeInput, Prisma.MatchInfoCreateInput>
+  id?: string
+  matchId: string
+  gameEndTimestamp: number
+  data: runtime.InputJsonValue
 }
 
 export type MatchUpdateInput = {
-  metadata?: Prisma.XOR<Prisma.MetadataUpdateEnvelopeInput, Prisma.MetadataCreateInput>
-  info?: Prisma.XOR<Prisma.MatchInfoUpdateEnvelopeInput, Prisma.MatchInfoCreateInput>
+  matchId?: Prisma.StringFieldUpdateOperationsInput | string
+  gameEndTimestamp?: Prisma.IntFieldUpdateOperationsInput | number
+  data?: runtime.InputJsonValue | runtime.InputJsonValue
 }
 
 export type MatchUncheckedUpdateInput = {
-  metadata?: Prisma.XOR<Prisma.MetadataUpdateEnvelopeInput, Prisma.MetadataCreateInput>
-  info?: Prisma.XOR<Prisma.MatchInfoUpdateEnvelopeInput, Prisma.MatchInfoCreateInput>
+  matchId?: Prisma.StringFieldUpdateOperationsInput | string
+  gameEndTimestamp?: Prisma.IntFieldUpdateOperationsInput | number
+  data?: runtime.InputJsonValue | runtime.InputJsonValue
 }
 
 export type MatchCreateManyInput = {
-  id: string
-  metadata: Prisma.XOR<Prisma.MetadataCreateEnvelopeInput, Prisma.MetadataCreateInput>
-  info: Prisma.XOR<Prisma.MatchInfoCreateEnvelopeInput, Prisma.MatchInfoCreateInput>
+  id?: string
+  matchId: string
+  gameEndTimestamp: number
+  data: runtime.InputJsonValue
 }
 
 export type MatchUpdateManyMutationInput = {
-  metadata?: Prisma.XOR<Prisma.MetadataUpdateEnvelopeInput, Prisma.MetadataCreateInput>
-  info?: Prisma.XOR<Prisma.MatchInfoUpdateEnvelopeInput, Prisma.MatchInfoCreateInput>
+  matchId?: Prisma.StringFieldUpdateOperationsInput | string
+  gameEndTimestamp?: Prisma.IntFieldUpdateOperationsInput | number
+  data?: runtime.InputJsonValue | runtime.InputJsonValue
 }
 
 export type MatchUncheckedUpdateManyInput = {
-  metadata?: Prisma.XOR<Prisma.MetadataUpdateEnvelopeInput, Prisma.MetadataCreateInput>
-  info?: Prisma.XOR<Prisma.MatchInfoUpdateEnvelopeInput, Prisma.MatchInfoCreateInput>
-}
-
-export type MetadataObjectEqualityInput = {
-  dataVersion: string
-  matchId: string
-  participants?: string[]
-}
-
-export type MatchInfoObjectEqualityInput = {
-  endOfGameResult: string
-  gameCreation: bigint | number
-  gameDuration: number
-  gameEndTimestamp: bigint | number
-  gameId: bigint | number
-  gameMode: string
-  gameName: string
-  gameStartTimestamp: bigint | number
-  gameType: string
-  gameVersion: string
-  mapId: number
-  participants?: runtime.InputJsonValue[]
-  platformId: string
-  queueId: number
-  teams?: Prisma.TeamObjectEqualityInput[]
-  tournamentCode: string
+  matchId?: Prisma.StringFieldUpdateOperationsInput | string
+  gameEndTimestamp?: Prisma.IntFieldUpdateOperationsInput | number
+  data?: runtime.InputJsonValue | runtime.InputJsonValue
 }
 
 export type MatchCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  matchId?: Prisma.SortOrder
+  gameEndTimestamp?: Prisma.SortOrder
+  data?: Prisma.SortOrder
+}
+
+export type MatchAvgOrderByAggregateInput = {
+  gameEndTimestamp?: Prisma.SortOrder
 }
 
 export type MatchMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  matchId?: Prisma.SortOrder
+  gameEndTimestamp?: Prisma.SortOrder
 }
 
 export type MatchMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  matchId?: Prisma.SortOrder
+  gameEndTimestamp?: Prisma.SortOrder
 }
 
-export type MetadataCreateInput = {
-  dataVersion: string
-  matchId: string
-  participants?: Prisma.MetadataCreateparticipantsInput | string[]
-}
-
-export type MatchInfoCreateInput = {
-  endOfGameResult: string
-  gameCreation: bigint | number
-  gameDuration: number
-  gameEndTimestamp: bigint | number
-  gameId: bigint | number
-  gameMode: string
-  gameName: string
-  gameStartTimestamp: bigint | number
-  gameType: string
-  gameVersion: string
-  mapId: number
-  participants?: Prisma.MatchInfoCreateparticipantsInput | runtime.InputJsonValue[]
-  platformId: string
-  queueId: number
-  teams?: Prisma.TeamCreateInput | Prisma.TeamCreateInput[]
-  tournamentCode: string
+export type MatchSumOrderByAggregateInput = {
+  gameEndTimestamp?: Prisma.SortOrder
 }
 
 
 
 export type MatchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  metadata?: boolean | Prisma.MetadataDefaultArgs<ExtArgs>
-  info?: boolean | Prisma.MatchInfoDefaultArgs<ExtArgs>
+  matchId?: boolean
+  gameEndTimestamp?: boolean
+  data?: boolean
 }, ExtArgs["result"]["match"]>
 
 
 
 export type MatchSelectScalar = {
   id?: boolean
+  matchId?: boolean
+  gameEndTimestamp?: boolean
+  data?: boolean
 }
 
-export type MatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "metadata" | "info", ExtArgs["result"]["match"]>
-export type MatchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type MatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "matchId" | "gameEndTimestamp" | "data", ExtArgs["result"]["match"]>
 
 export type $MatchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Match"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    matchId: string
+    gameEndTimestamp: number
+    data: runtime.JsonValue
   }, ExtArgs["result"]["match"]>
-  composites: {
-    metadata: Prisma.$MetadataPayload
-    info: Prisma.$MatchInfoPayload
-  }
+  composites: {}
 }
 
 export type MatchGetPayload<S extends boolean | null | undefined | MatchDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$MatchPayload, S>
@@ -701,6 +738,9 @@ export interface Prisma__MatchClient<T, Null = never, ExtArgs extends runtime.Ty
  */
 export interface MatchFieldRefs {
   readonly id: Prisma.FieldRef<"Match", 'String'>
+  readonly matchId: Prisma.FieldRef<"Match", 'String'>
+  readonly gameEndTimestamp: Prisma.FieldRef<"Match", 'Int'>
+  readonly data: Prisma.FieldRef<"Match", 'Json'>
 }
     
 
@@ -717,10 +757,6 @@ export type MatchFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Match
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
   /**
    * Filter, which Match to fetch.
    */
@@ -740,10 +776,6 @@ export type MatchFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
-  /**
    * Filter, which Match to fetch.
    */
   where: Prisma.MatchWhereUniqueInput
@@ -761,10 +793,6 @@ export type MatchFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Match
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
   /**
    * Filter, which Match to fetch.
    */
@@ -814,10 +842,6 @@ export type MatchFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
-  /**
    * Filter, which Match to fetch.
    */
   where?: Prisma.MatchWhereInput
@@ -866,10 +890,6 @@ export type MatchFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
-  /**
    * Filter, which Matches to fetch.
    */
   where?: Prisma.MatchWhereInput
@@ -913,10 +933,6 @@ export type MatchCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
-  /**
    * The data needed to create a Match.
    */
   data: Prisma.XOR<Prisma.MatchCreateInput, Prisma.MatchUncheckedCreateInput>
@@ -944,10 +960,6 @@ export type MatchUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Omit specific fields from the Match
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
   /**
    * The data needed to update a Match.
    */
@@ -989,10 +1001,6 @@ export type MatchUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
-  /**
    * The filter to search for the Match to update in case it exists.
    */
   where: Prisma.MatchWhereUniqueInput
@@ -1018,10 +1026,6 @@ export type MatchDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Omit specific fields from the Match
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
   /**
    * Filter which Match to delete.
    */
@@ -1082,8 +1086,4 @@ export type MatchDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the Match
    */
   omit?: Prisma.MatchOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.MatchInclude<ExtArgs> | null
 }

@@ -13,6 +13,9 @@ export const auth = betterAuth({
 			clientSecret: GITHUB_SECRET
 		}
 	},
+	emailAndPassword: {
+		enabled: true
+	},
 	user: {
 		additionalFields: {
 			puuid: {

@@ -5,14 +5,14 @@
 	import UserAvatar from './UserAvatar.svelte';
 	import { signOut } from '$lib/auth-client';
 	import { goto } from '$app/navigation';
-	import { getUser } from '$lib/api/user.remote';
+	import type { PrismaUser } from '$lib/server/prisma';
 
 	type Props = WithoutChildrenOrChild<Popover.ContentProps> & {
+		user: PrismaUser;
 		avatarRef?: HTMLElement | null;
 	};
 
-	let { ref = $bindable(null), avatarRef = $bindable(null), ...restProps }: Props = $props();
-	let user = await getUser();
+	let { user, ref = $bindable(null), avatarRef = $bindable(null), ...restProps }: Props = $props();
 </script>
 
 <Popover.Root>

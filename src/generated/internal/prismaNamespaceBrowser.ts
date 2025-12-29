@@ -50,10 +50,11 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 export const ModelName = {
   User: 'User',
+  Match: 'Match',
+  Challenge: 'Challenge',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification',
-  Match: 'Match'
+  Verification: 'Verification'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -68,18 +69,44 @@ export const UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
-  linked: 'linked',
   profileIconId: 'profileIconId',
   puuid: 'puuid',
   gameName: 'gameName',
   tagLine: 'tagLine',
   platform: 'platform',
+  region: 'region',
   lastUpdatedAt: 'lastUpdatedAt',
+  xp: 'xp',
+  level: 'level',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const MatchScalarFieldEnum = {
+  id: 'id',
+  matchId: 'matchId',
+  gameEndTimestamp: 'gameEndTimestamp',
+  data: 'data'
+} as const
+
+export type MatchScalarFieldEnum = (typeof MatchScalarFieldEnum)[keyof typeof MatchScalarFieldEnum]
+
+
+export const ChallengeScalarFieldEnum = {
+  id: 'id',
+  userPuuid: 'userPuuid',
+  challengeId: 'challengeId',
+  fromTime: 'fromTime',
+  toTime: 'toTime',
+  progress: 'progress',
+  collectable: 'collectable',
+  completed: 'completed'
+} as const
+
+export type ChallengeScalarFieldEnum = (typeof ChallengeScalarFieldEnum)[keyof typeof ChallengeScalarFieldEnum]
 
 
 export const SessionScalarFieldEnum = {
@@ -125,13 +152,6 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
-
-
-export const MatchScalarFieldEnum = {
-  id: 'id'
-} as const
-
-export type MatchScalarFieldEnum = (typeof MatchScalarFieldEnum)[keyof typeof MatchScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -28,10 +28,16 @@ export type AggregateUser = {
 
 export type UserAvgAggregateOutputType = {
   profileIconId: number | null
+  lastUpdatedAt: number | null
+  xp: number | null
+  level: number | null
 }
 
 export type UserSumAggregateOutputType = {
   profileIconId: number | null
+  lastUpdatedAt: number | null
+  xp: number | null
+  level: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -40,13 +46,15 @@ export type UserMinAggregateOutputType = {
   email: string | null
   emailVerified: boolean | null
   image: string | null
-  linked: boolean | null
   profileIconId: number | null
   puuid: string | null
   gameName: string | null
   tagLine: string | null
   platform: string | null
-  lastUpdatedAt: Date | null
+  region: string | null
+  lastUpdatedAt: number | null
+  xp: number | null
+  level: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -57,13 +65,15 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   emailVerified: boolean | null
   image: string | null
-  linked: boolean | null
   profileIconId: number | null
   puuid: string | null
   gameName: string | null
   tagLine: string | null
   platform: string | null
-  lastUpdatedAt: Date | null
+  region: string | null
+  lastUpdatedAt: number | null
+  xp: number | null
+  level: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,13 +84,15 @@ export type UserCountAggregateOutputType = {
   email: number
   emailVerified: number
   image: number
-  linked: number
   profileIconId: number
   puuid: number
   gameName: number
   tagLine: number
   platform: number
+  region: number
   lastUpdatedAt: number
+  xp: number
+  level: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -89,10 +101,16 @@ export type UserCountAggregateOutputType = {
 
 export type UserAvgAggregateInputType = {
   profileIconId?: true
+  lastUpdatedAt?: true
+  xp?: true
+  level?: true
 }
 
 export type UserSumAggregateInputType = {
   profileIconId?: true
+  lastUpdatedAt?: true
+  xp?: true
+  level?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -101,13 +119,15 @@ export type UserMinAggregateInputType = {
   email?: true
   emailVerified?: true
   image?: true
-  linked?: true
   profileIconId?: true
   puuid?: true
   gameName?: true
   tagLine?: true
   platform?: true
+  region?: true
   lastUpdatedAt?: true
+  xp?: true
+  level?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -118,13 +138,15 @@ export type UserMaxAggregateInputType = {
   email?: true
   emailVerified?: true
   image?: true
-  linked?: true
   profileIconId?: true
   puuid?: true
   gameName?: true
   tagLine?: true
   platform?: true
+  region?: true
   lastUpdatedAt?: true
+  xp?: true
+  level?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -135,13 +157,15 @@ export type UserCountAggregateInputType = {
   email?: true
   emailVerified?: true
   image?: true
-  linked?: true
   profileIconId?: true
   puuid?: true
   gameName?: true
   tagLine?: true
   platform?: true
+  region?: true
   lastUpdatedAt?: true
+  xp?: true
+  level?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -239,13 +263,15 @@ export type UserGroupByOutputType = {
   email: string
   emailVerified: boolean
   image: string | null
-  linked: boolean
   profileIconId: number | null
   puuid: string | null
   gameName: string | null
   tagLine: string | null
   platform: string | null
-  lastUpdatedAt: Date
+  region: string | null
+  lastUpdatedAt: number | null
+  xp: number
+  level: number
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -279,16 +305,18 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   image?: Prisma.StringNullableFilter<"User"> | string | null
-  linked?: Prisma.BoolFilter<"User"> | boolean
   profileIconId?: Prisma.IntNullableFilter<"User"> | number | null
   puuid?: Prisma.StringNullableFilter<"User"> | string | null
   gameName?: Prisma.StringNullableFilter<"User"> | string | null
   tagLine?: Prisma.StringNullableFilter<"User"> | string | null
   platform?: Prisma.StringNullableFilter<"User"> | string | null
-  tasks?: Prisma.TaskCompositeListFilter | Prisma.TaskObjectEqualityInput[]
-  lastUpdatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  region?: Prisma.StringNullableFilter<"User"> | string | null
+  lastUpdatedAt?: Prisma.IntNullableFilter<"User"> | number | null
+  xp?: Prisma.IntFilter<"User"> | number
+  level?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  challenges?: Prisma.ChallengeListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
 }
@@ -299,16 +327,18 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  linked?: Prisma.SortOrder
   profileIconId?: Prisma.SortOrder
   puuid?: Prisma.SortOrder
   gameName?: Prisma.SortOrder
   tagLine?: Prisma.SortOrder
   platform?: Prisma.SortOrder
-  tasks?: Prisma.TaskOrderByCompositeAggregateInput
+  region?: Prisma.SortOrder
   lastUpdatedAt?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  level?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  challenges?: Prisma.ChallengeOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
 }
@@ -316,25 +346,27 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  puuid?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringFilter<"User"> | string
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   image?: Prisma.StringNullableFilter<"User"> | string | null
-  linked?: Prisma.BoolFilter<"User"> | boolean
   profileIconId?: Prisma.IntNullableFilter<"User"> | number | null
-  puuid?: Prisma.StringNullableFilter<"User"> | string | null
   gameName?: Prisma.StringNullableFilter<"User"> | string | null
   tagLine?: Prisma.StringNullableFilter<"User"> | string | null
   platform?: Prisma.StringNullableFilter<"User"> | string | null
-  tasks?: Prisma.TaskCompositeListFilter | Prisma.TaskObjectEqualityInput[]
-  lastUpdatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  region?: Prisma.StringNullableFilter<"User"> | string | null
+  lastUpdatedAt?: Prisma.IntNullableFilter<"User"> | number | null
+  xp?: Prisma.IntFilter<"User"> | number
+  level?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  challenges?: Prisma.ChallengeListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "puuid">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -342,13 +374,15 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  linked?: Prisma.SortOrder
   profileIconId?: Prisma.SortOrder
   puuid?: Prisma.SortOrder
   gameName?: Prisma.SortOrder
   tagLine?: Prisma.SortOrder
   platform?: Prisma.SortOrder
+  region?: Prisma.SortOrder
   lastUpdatedAt?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  level?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -367,13 +401,15 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   emailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   image?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  linked?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   profileIconId?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
   puuid?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   gameName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   tagLine?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   platform?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  lastUpdatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  region?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  lastUpdatedAt?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
+  xp?: Prisma.IntWithAggregatesFilter<"User"> | number
+  level?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -384,16 +420,18 @@ export type UserCreateInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  linked?: boolean
   profileIconId?: number | null
   puuid?: string | null
   gameName?: string | null
   tagLine?: string | null
   platform?: string | null
-  tasks?: Prisma.XOR<Prisma.TaskListCreateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Date | string
+  region?: string | null
+  lastUpdatedAt?: number | null
+  xp?: number
+  level?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
 }
@@ -404,16 +442,18 @@ export type UserUncheckedCreateInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  linked?: boolean
   profileIconId?: number | null
   puuid?: string | null
   gameName?: string | null
   tagLine?: string | null
   platform?: string | null
-  tasks?: Prisma.XOR<Prisma.TaskListCreateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Date | string
+  region?: string | null
+  lastUpdatedAt?: number | null
+  xp?: number
+  level?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
 }
@@ -423,16 +463,18 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tasks?: Prisma.XOR<Prisma.TaskListUpdateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  challenges?: Prisma.ChallengeUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
 }
@@ -442,16 +484,18 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tasks?: Prisma.XOR<Prisma.TaskListUpdateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -462,14 +506,15 @@ export type UserCreateManyInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  linked?: boolean
   profileIconId?: number | null
   puuid?: string | null
   gameName?: string | null
   tagLine?: string | null
   platform?: string | null
-  tasks?: Prisma.XOR<Prisma.TaskListCreateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Date | string
+  region?: string | null
+  lastUpdatedAt?: number | null
+  xp?: number
+  level?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -479,14 +524,15 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tasks?: Prisma.XOR<Prisma.TaskListUpdateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -496,22 +542,17 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tasks?: Prisma.XOR<Prisma.TaskListUpdateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type TaskObjectEqualityInput = {
-  id: string
-  assignedDate: Date | string
-  status: string
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -520,19 +561,24 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  linked?: Prisma.SortOrder
   profileIconId?: Prisma.SortOrder
   puuid?: Prisma.SortOrder
   gameName?: Prisma.SortOrder
   tagLine?: Prisma.SortOrder
   platform?: Prisma.SortOrder
+  region?: Prisma.SortOrder
   lastUpdatedAt?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  level?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
   profileIconId?: Prisma.SortOrder
+  lastUpdatedAt?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  level?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -541,13 +587,15 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  linked?: Prisma.SortOrder
   profileIconId?: Prisma.SortOrder
   puuid?: Prisma.SortOrder
   gameName?: Prisma.SortOrder
   tagLine?: Prisma.SortOrder
   platform?: Prisma.SortOrder
+  region?: Prisma.SortOrder
   lastUpdatedAt?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  level?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -558,30 +606,29 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  linked?: Prisma.SortOrder
   profileIconId?: Prisma.SortOrder
   puuid?: Prisma.SortOrder
   gameName?: Prisma.SortOrder
   tagLine?: Prisma.SortOrder
   platform?: Prisma.SortOrder
+  region?: Prisma.SortOrder
   lastUpdatedAt?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  level?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
   profileIconId?: Prisma.SortOrder
+  lastUpdatedAt?: Prisma.SortOrder
+  xp?: Prisma.SortOrder
+  level?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
-}
-
-export type TaskCreateInput = {
-  id: string
-  assignedDate: Date | string
-  status: string
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -606,8 +653,30 @@ export type NullableIntFieldUpdateOperationsInput = {
   unset?: boolean
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type UserCreateNestedOneWithoutChallengesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChallengesInput, Prisma.UserUncheckedCreateWithoutChallengesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChallengesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChallengesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChallengesInput, Prisma.UserUncheckedCreateWithoutChallengesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChallengesInput
+  upsert?: Prisma.UserUpsertWithoutChallengesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChallengesInput, Prisma.UserUpdateWithoutChallengesInput>, Prisma.UserUncheckedUpdateWithoutChallengesInput>
 }
 
 export type UserCreateNestedOneWithoutSessionsInput = {
@@ -638,22 +707,122 @@ export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAccountsInput, Prisma.UserUpdateWithoutAccountsInput>, Prisma.UserUncheckedUpdateWithoutAccountsInput>
 }
 
+export type UserCreateWithoutChallengesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  profileIconId?: number | null
+  puuid?: string | null
+  gameName?: string | null
+  tagLine?: string | null
+  platform?: string | null
+  region?: string | null
+  lastUpdatedAt?: number | null
+  xp?: number
+  level?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutChallengesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  profileIconId?: number | null
+  puuid?: string | null
+  gameName?: string | null
+  tagLine?: string | null
+  platform?: string | null
+  region?: string | null
+  lastUpdatedAt?: number | null
+  xp?: number
+  level?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutChallengesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChallengesInput, Prisma.UserUncheckedCreateWithoutChallengesInput>
+}
+
+export type UserUpsertWithoutChallengesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChallengesInput, Prisma.UserUncheckedUpdateWithoutChallengesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChallengesInput, Prisma.UserUncheckedCreateWithoutChallengesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChallengesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChallengesInput, Prisma.UserUncheckedUpdateWithoutChallengesInput>
+}
+
+export type UserUpdateWithoutChallengesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChallengesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutSessionsInput = {
   id: string
   name: string
   email: string
   emailVerified?: boolean
   image?: string | null
-  linked?: boolean
   profileIconId?: number | null
   puuid?: string | null
   gameName?: string | null
   tagLine?: string | null
   platform?: string | null
-  tasks?: Prisma.XOR<Prisma.TaskListCreateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Date | string
+  region?: string | null
+  lastUpdatedAt?: number | null
+  xp?: number
+  level?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
 }
 
@@ -663,16 +832,18 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  linked?: boolean
   profileIconId?: number | null
   puuid?: string | null
   gameName?: string | null
   tagLine?: string | null
   platform?: string | null
-  tasks?: Prisma.XOR<Prisma.TaskListCreateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Date | string
+  region?: string | null
+  lastUpdatedAt?: number | null
+  xp?: number
+  level?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -697,16 +868,18 @@ export type UserUpdateWithoutSessionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tasks?: Prisma.XOR<Prisma.TaskListUpdateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  challenges?: Prisma.ChallengeUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
 }
 
@@ -715,16 +888,18 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tasks?: Prisma.XOR<Prisma.TaskListUpdateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -734,16 +909,18 @@ export type UserCreateWithoutAccountsInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  linked?: boolean
   profileIconId?: number | null
   puuid?: string | null
   gameName?: string | null
   tagLine?: string | null
   platform?: string | null
-  tasks?: Prisma.XOR<Prisma.TaskListCreateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Date | string
+  region?: string | null
+  lastUpdatedAt?: number | null
+  xp?: number
+  level?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  challenges?: Prisma.ChallengeCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
 }
 
@@ -753,16 +930,18 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  linked?: boolean
   profileIconId?: number | null
   puuid?: string | null
   gameName?: string | null
   tagLine?: string | null
   platform?: string | null
-  tasks?: Prisma.XOR<Prisma.TaskListCreateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Date | string
+  region?: string | null
+  lastUpdatedAt?: number | null
+  xp?: number
+  level?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  challenges?: Prisma.ChallengeUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -787,16 +966,18 @@ export type UserUpdateWithoutAccountsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tasks?: Prisma.XOR<Prisma.TaskListUpdateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  challenges?: Prisma.ChallengeUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
 }
 
@@ -805,16 +986,18 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  linked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileIconId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   puuid?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gameName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagLine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   platform?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tasks?: Prisma.XOR<Prisma.TaskListUpdateEnvelopeInput, Prisma.TaskCreateInput> | Prisma.TaskCreateInput[]
-  lastUpdatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastUpdatedAt?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  xp?: Prisma.IntFieldUpdateOperationsInput | number
+  level?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  challenges?: Prisma.ChallengeUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -824,11 +1007,13 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
  */
 
 export type UserCountOutputType = {
+  challenges: number
   sessions: number
   accounts: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  challenges?: boolean | UserCountOutputTypeCountChallengesArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
 }
@@ -841,6 +1026,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChallengeWhereInput
 }
 
 /**
@@ -864,16 +1056,18 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   emailVerified?: boolean
   image?: boolean
-  linked?: boolean
   profileIconId?: boolean
   puuid?: boolean
   gameName?: boolean
   tagLine?: boolean
   platform?: boolean
-  tasks?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
+  region?: boolean
   lastUpdatedAt?: boolean
+  xp?: boolean
+  level?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  challenges?: boolean | Prisma.User$challengesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -887,19 +1081,22 @@ export type UserSelectScalar = {
   email?: boolean
   emailVerified?: boolean
   image?: boolean
-  linked?: boolean
   profileIconId?: boolean
   puuid?: boolean
   gameName?: boolean
   tagLine?: boolean
   platform?: boolean
+  region?: boolean
   lastUpdatedAt?: boolean
+  xp?: boolean
+  level?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "linked" | "profileIconId" | "puuid" | "gameName" | "tagLine" | "platform" | "tasks" | "lastUpdatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "profileIconId" | "puuid" | "gameName" | "tagLine" | "platform" | "region" | "lastUpdatedAt" | "xp" | "level" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  challenges?: boolean | Prisma.User$challengesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -908,6 +1105,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    challenges: Prisma.$ChallengePayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     accounts: Prisma.$AccountPayload<ExtArgs>[]
   }
@@ -917,19 +1115,19 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     emailVerified: boolean
     image: string | null
-    linked: boolean
     profileIconId: number | null
     puuid: string | null
     gameName: string | null
     tagLine: string | null
     platform: string | null
-    lastUpdatedAt: Date
+    region: string | null
+    lastUpdatedAt: number | null
+    xp: number
+    level: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
-  composites: {
-    tasks: Prisma.$TaskPayload[]
-  }
+  composites: {}
 }
 
 export type UserGetPayload<S extends boolean | null | undefined | UserDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$UserPayload, S>
@@ -1291,6 +1489,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  challenges<T extends Prisma.User$challengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$challengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1327,13 +1526,15 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly emailVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly image: Prisma.FieldRef<"User", 'String'>
-  readonly linked: Prisma.FieldRef<"User", 'Boolean'>
   readonly profileIconId: Prisma.FieldRef<"User", 'Int'>
   readonly puuid: Prisma.FieldRef<"User", 'String'>
   readonly gameName: Prisma.FieldRef<"User", 'String'>
   readonly tagLine: Prisma.FieldRef<"User", 'String'>
   readonly platform: Prisma.FieldRef<"User", 'String'>
-  readonly lastUpdatedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly region: Prisma.FieldRef<"User", 'String'>
+  readonly lastUpdatedAt: Prisma.FieldRef<"User", 'Int'>
+  readonly xp: Prisma.FieldRef<"User", 'Int'>
+  readonly level: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -1703,6 +1904,30 @@ export type UserAggregateRawArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
    */
   options?: runtime.InputJsonValue
+}
+
+/**
+ * User.challenges
+ */
+export type User$challengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Challenge
+   */
+  select?: Prisma.ChallengeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Challenge
+   */
+  omit?: Prisma.ChallengeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChallengeInclude<ExtArgs> | null
+  where?: Prisma.ChallengeWhereInput
+  orderBy?: Prisma.ChallengeOrderByWithRelationInput | Prisma.ChallengeOrderByWithRelationInput[]
+  cursor?: Prisma.ChallengeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChallengeScalarFieldEnum | Prisma.ChallengeScalarFieldEnum[]
 }
 
 /**

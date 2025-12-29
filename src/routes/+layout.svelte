@@ -9,4 +9,6 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+<div data-sveltekit-preload-data="off" data-sveltekit-preload-code="off">
+	{@render children()}
+</div>

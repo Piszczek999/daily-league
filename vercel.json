@@ -1,0 +1,12 @@
+{
+	"buildCommand": "prisma generate && npm run build",
+	"functions": {
+		"api/**": {
+			"includeFiles": "node_modules/.prisma/client/**"
+		}
+	},
+	"env": {
+		"PRISMA_CLI_QUERY_ENGINE_TYPE": "binary"
+	},
+	"installCommand": "npm install && prisma generate"
+}

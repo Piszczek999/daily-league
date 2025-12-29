@@ -66,6 +66,8 @@ model Challenge {
     progress    Int     @default(0)
     collectable Boolean @default(false)
     completed   Boolean @default(false)
+
+    @@map("challenge")
 }
 
 model Session {

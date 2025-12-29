@@ -1,14 +1,9 @@
 import { challengeDetailsMap, challengesDetails } from '$lib/constants/challenges';
-import {
-	extractUserParticipant,
-	getEndOfDay,
-	getEndOfWeek,
-	getStartOfDay,
-	getStartOfWeek
-} from '$lib/helpers';
+import { getEndOfDay, getEndOfWeek, getStartOfDay, getStartOfWeek } from '$lib/helpers';
 import type { Match, Prisma } from '@prisma/client';
 import { config } from '../config';
 import { prisma, type PrismaUser } from '../prisma';
+import type { RiotMatch } from '$lib/types/riotTypes';
 
 class ChallengeService {
 	async evaluateMany(user: PrismaUser, matches: Match[]) {
@@ -17,8 +12,13 @@ class ChallengeService {
 		const challenges = await prisma.challenge.findMany({
 			where: { toTime: { gt: user.lastUpdatedAt }, completed: false }
 		});
-		const participantMatches = matches.map((match) => extractUserParticipant(match, user.puuid));
 		for (const challenge of challenges) {
+			const participantMatches = matches
+				.filter(
+					(match) =>
+						match.gameEndTimestamp > challenge.fromTime && match.gameEndTimestamp < challenge.toTime
+				)
+				.map((match) => extractUserParticipant(match, user.puuid));
 			const challengeDetails = challengeDetailsMap.get(challenge.challengeId)!;
 			console.log(`${challengeDetails.title}: ${challengeDetails.description}`);
 
@@ -89,3 +89,10 @@ class ChallengeService {
 }
 
 export const challengeService = new ChallengeService();
+
+function extractUserParticipant(match: Match, userPuuid: string) {
+	const riotMatch = match.data as unknown as RiotMatch;
+	const participant = riotMatch.info.participants.find((p) => p.puuid === userPuuid);
+	if (!participant) throw new Error(`User not found in match ${match.matchId}`);
+	return participant;
+}

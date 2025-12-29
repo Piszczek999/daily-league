@@ -67,10 +67,3 @@ export function getEndOfWeek(timestamp?: number | Date) {
 export function getRequiredXp(level: number) {
 	return 5 * level ** 3 + 50 * level ** 2 + 150 * level;
 }
-
-export function extractUserParticipant(match: Match, userPuuid: string) {
-	const riotMatch = match.data as unknown as RiotMatch;
-	const participant = riotMatch.info.participants.find((p) => p.puuid === userPuuid);
-	if (!participant) throw new Error(`User not found in match ${match.matchId}`);
-	return participant;
-}

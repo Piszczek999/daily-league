@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import { PrismaClient } from '../../generated/client';
 import type { Platform, Region } from '$lib/types/riotTypes';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 

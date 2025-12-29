@@ -208,9 +208,10 @@ async function getListOfMatchIds(
 	if (options?.start !== undefined) params.append('start', options.start.toString());
 	if (options?.type !== undefined) params.append('type', options.type.toString());
 	if (options?.queue !== undefined) params.append('queue', options.queue.toString());
-	if (options?.endTime !== undefined) params.append('endTime', (options.endTime / 1000).toString());
+	if (options?.endTime !== undefined)
+		params.append('endTime', Math.floor(options.endTime / 1000).toString());
 	if (options?.startTime !== undefined)
-		params.append('startTime', (options.startTime / 1000).toString());
+		params.append('startTime', Math.floor(options.startTime / 1000).toString());
 
 	const queryString = params.toString();
 	const path = `/lol/match/v5/matches/by-puuid/${user.puuid}/ids${queryString ? `?${queryString}` : ''}`;

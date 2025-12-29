@@ -1,24 +1,20 @@
 import { prisma, type PrismaUser } from '../prisma';
 import riotClient from '$lib/server/riotClient';
-import type { Match } from '../../../generated/client';
 import { getEndOfWeek, getStartOfWeek } from '$lib/helpers';
+import type { Match } from '@prisma/client';
 
 class MatchService {
 	async getAllRelevantMatchIds(user: PrismaUser) {
 		// return ['EUN1_3871123908'];
 		if (!user.puuid) throw new Error();
-		console.log(1);
 		if (getEndOfWeek(user.lastUpdatedAt) < Date.now()) {
-			console.log(2);
 			if (getEndOfWeek(user.lastUpdatedAt) + 1 === getStartOfWeek()) {
-				console.log(3);
 				return await riotClient.getListOfMatchIds(user, {
 					startTime: getStartOfWeek(user.lastUpdatedAt),
 					endTime: getEndOfWeek(),
 					count: 100
 				});
 			}
-			console.log(4);
 
 			return [
 				...(await riotClient.getListOfMatchIds(user, {
@@ -33,8 +29,6 @@ class MatchService {
 				}))
 			];
 		}
-		console.log(5);
-		console.log(getStartOfWeek());
 		return await riotClient.getListOfMatchIds(user, {
 			startTime: getStartOfWeek(),
 			count: 100

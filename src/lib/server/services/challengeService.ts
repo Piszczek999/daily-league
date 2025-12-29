@@ -1,8 +1,7 @@
 import { challengesDetails } from '$lib/constants/challenges';
 import { getEndOfDay, getEndOfWeek, getStartOfDay, getStartOfWeek } from '$lib/helpers';
 import type { RiotMatch } from '$lib/types/riotTypes';
-import type { Match } from '../../../generated/client';
-import type { ChallengeCreateManyInput } from '../../../generated/models';
+import type { Match, Prisma } from '@prisma/client';
 import { config } from '../config';
 import { prisma, type PrismaUser } from '../prisma';
 
@@ -59,7 +58,7 @@ class ChallengeService {
 			.slice(0, config.dailyChallengesCount);
 
 		await prisma.challenge.createMany({
-			data: challenges.map<ChallengeCreateManyInput>((challenge) => ({
+			data: challenges.map<Prisma.ChallengeCreateManyInput>((challenge) => ({
 				challengeId: challenge.id,
 				fromTime: getStartOfDay(),
 				toTime: getEndOfDay(),
@@ -77,7 +76,7 @@ class ChallengeService {
 			.slice(0, config.weeklyChallengesCount);
 
 		await prisma.challenge.createMany({
-			data: challenges.map<ChallengeCreateManyInput>((challenge) => ({
+			data: challenges.map<Prisma.ChallengeCreateManyInput>((challenge) => ({
 				challengeId: challenge.id,
 				fromTime: getStartOfWeek(),
 				toTime: getEndOfWeek(),

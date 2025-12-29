@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { Eye, Swords, Trophy, Brain, Target, Users, Sparkles, HandCoins } from '@lucide/svelte';
 	import { Progress, type BitsPrimitiveDivAttributes, type WithoutChildrenOrChild } from 'bits-ui';
-	import type { Challenge } from '../../generated/client';
 	import { challengeReward, challengesDetails } from '$lib/constants/challenges';
 	import { claimReward } from '../../routes/app/user.remote';
 	import { fly } from 'svelte/transition';
+	import type { Challenge } from '@prisma/client';
 
 	type CardSize = 'sm' | 'md' | 'lg' | 'xl';
 	type Props = WithoutChildrenOrChild<BitsPrimitiveDivAttributes> & {

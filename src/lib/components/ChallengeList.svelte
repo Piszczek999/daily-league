@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Challenge } from '../../generated/client';
+	import type { Challenge } from '@prisma/client';
 	import ChallengeCard from './ChallengeCard.svelte';
 
 	type Props = {

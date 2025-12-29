@@ -26,7 +26,9 @@ export const getUser = query(async () => {
 
 export const updateRiotId = form(riotIdSchema, async (data) => {
 	console.log('updateRiotId()');
-	const { session } = await checkAuth();
+	const { session, user } = await checkAuth();
+
+	if (user.puuid) return invalid('Riot account already linked to this account');
 
 	const account = await riotClient.getAccountByRiotId(data);
 	if (!account) return invalid('Riot account not found');
@@ -37,7 +39,7 @@ export const updateRiotId = form(riotIdSchema, async (data) => {
 	const summoner = await riotClient.getSummoner(account.puuid, region.region);
 	if (!summoner) return invalid('Summoner not found');
 
-	const user = await prisma.user.update({
+	const updatedUser = await prisma.user.update({
 		where: { id: session.userId },
 		data: {
 			puuid: account.puuid,
@@ -49,10 +51,10 @@ export const updateRiotId = form(riotIdSchema, async (data) => {
 			region: toRegion(region.region)
 		}
 	});
-	if (!user.puuid) throw new Error();
+	if (!updatedUser.puuid) throw new Error();
 
-	await challengeService.generateDailyChallenges(user.puuid);
-	await challengeService.generateWeeklyChallenges(user.puuid);
+	await challengeService.generateDailyChallenges(updatedUser.puuid);
+	await challengeService.generateWeeklyChallenges(updatedUser.puuid);
 
 	redirect(303, '/app');
 });
@@ -79,7 +81,6 @@ export const update = command(async () => {
 	}
 
 	const allMatchIds = await matchService.getAllRelevantMatchIds(user);
-	console.log('allMatchIds: ', allMatchIds);
 	if (allMatchIds.length === 0) return;
 
 	const allMatches = await matchService.getMatches(user, allMatchIds);

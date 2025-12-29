@@ -131,7 +131,7 @@ export const challengesDetails = [
 		category: 'wins',
 		mode: 'daily',
 		difficulty: 'hard',
-		fn: (player) => player.deaths === 0,
+		fn: (player) => player.win && player.deaths === 0,
 		threshold: 1
 	},
 	{

@@ -16,7 +16,9 @@ class ChallengeService {
 			const participantMatches = matches
 				.filter(
 					(match) =>
-						match.gameEndTimestamp > challenge.fromTime && match.gameEndTimestamp < challenge.toTime
+						match.gameEndTimestamp > challenge.fromTime &&
+						match.gameEndTimestamp < challenge.toTime &&
+						(match.data as unknown as RiotMatch).info.gameDuration > 180
 				)
 				.map((match) => extractUserParticipant(match, user.puuid));
 			const challengeDetails = challengeDetailsMap.get(challenge.challengeId)!;

@@ -37,24 +37,36 @@ class MatchService {
 
 	async getMatches(user: PrismaUser, matchIds: string[]): Promise<Match[]> {
 		// test if getUser() works
-		if (!user.puuid) throw new Error();
+		if (!user.puuid) throw new Error('User PUUID is required');
 
-		const existingMatchesId = (
-			await prisma.match.findMany({
-				where: {
-					matchId: { in: matchIds }
-				},
-				select: {
-					matchId: true
-				}
-			})
-		).map((match) => match.matchId);
-
-		const missingMatchIds = matchIds.filter((id) => !existingMatchesId.includes(id));
-
-		const newMatches = await Promise.all(
-			missingMatchIds.map((id) => riotClient.getMatch(id, user.region))
+		const existingMatchIds = new Set(
+			(
+				await prisma.match.findMany({
+					where: {
+						matchId: { in: matchIds }
+					},
+					select: {
+						matchId: true
+					}
+				})
+			).map((match) => match.matchId)
 		);
+		const missingMatchIds = matchIds.filter((id) => !existingMatchIds.has(id));
+
+		const BATCH_SIZE = 20;
+		const newMatches = [];
+		for (let i = 0; i < missingMatchIds.length; i += BATCH_SIZE) {
+			const batch = missingMatchIds.slice(i, i + BATCH_SIZE);
+			const batchMatches = await Promise.all(
+				batch.map((id) => riotClient.getMatch(id, user.region))
+			);
+			newMatches.push(...batchMatches);
+
+			// Optional: add delay between batches to avoid rate limiting
+			if (i + BATCH_SIZE < missingMatchIds.length) {
+				await new Promise((resolve) => setTimeout(resolve, 100));
+			}
+		}
 		if (newMatches.length !== 0) {
 			await prisma.match.createMany({
 				data: newMatches.map((match) => ({

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Eye, Swords, Trophy, Brain, Target, Users, Sparkles, HandCoins } from '@lucide/svelte';
 	import { Progress, type BitsPrimitiveDivAttributes, type WithoutChildrenOrChild } from 'bits-ui';
-	import { challengeReward, challengesDetails } from '$lib/constants/challenges';
+	import { challengeDetailsMap, challengeReward } from '$lib/constants/challenges';
 	import { claimReward } from '../../routes/app/user.remote';
 	import { fly } from 'svelte/transition';
 	import type { Challenge } from '@prisma/client';
@@ -38,7 +38,7 @@
 		champion: Sparkles
 	};
 
-	let details = $derived(challengesDetails.find((d) => d.id === challenge.challengeId)!);
+	let details = $derived(challengeDetailsMap.get(challenge.challengeId)!);
 	let colorClasses = $derived(colorStyles[details.difficulty]);
 	let sizeClasses = $derived(sizeStyles[size]);
 	let reward = $derived(
@@ -50,7 +50,7 @@
 </script>
 
 <div class="relative transform-3d" in:fly|global={{ y: 200, delay }}>
-	<div class="absolute inset-0 shadow-glow {colorClasses.shadow} m-3 -translate-z-1 border"></div>
+	<div class="absolute inset-0 shadow-glow-xl {colorClasses.shadow} m-10 -translate-z-1"></div>
 
 	<div
 		class="relative rounded-lg border-4 border-black/20 transition-transform duration-300 ease-out hover:translate-z-5 hover:animate-wiggle {colorClasses.bg} {sizeClasses.card}"
@@ -76,18 +76,18 @@
 				>
 			{:else}
 				<div class="flex justify-between p-2 pb-1 text-xs">
-					<span class="text-shadow-md">{challenge.progress}/{details.treshhold}</span>
+					<span class="text-shadow-md">{challenge.progress}/{details.threshold}</span>
 					<span class="text-shadow-md">{reward} XP</span>
 				</div>
 			{/if}
 			<Progress.Root
 				value={challenge.progress}
-				max={details.treshhold}
+				max={details.threshold}
 				class="h-1.5 overflow-hidden bg-black opacity-30"
 			>
 				<div
 					class="h-full bg-white"
-					style={`transform: translateX(-${100 - (challenge.progress / details.treshhold) * 100}%)`}
+					style={`transform: translateX(-${100 - (challenge.progress / details.threshold) * 100}%)`}
 				></div>
 			</Progress.Root>
 		</div>

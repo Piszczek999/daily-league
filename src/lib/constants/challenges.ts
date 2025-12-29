@@ -8,14 +8,17 @@ type ChallengeDetails = {
 	mode: 'daily' | 'weekly';
 	difficulty: 'easy' | 'normal' | 'hard';
 	fn: (participant: RiotPlayerData) => number | boolean;
-	treshhold: number;
+	threshold: number;
 };
 
 export const challengeReward = {
 	easy: 150,
 	normal: 250,
 	hard: 500
-};
+} as const;
+
+/** Map for O(1) challenge lookup by ID */
+export const challengeDetailsMap = new Map<string, ChallengeDetails>();
 
 export const challengesDetails = [
 	{
@@ -26,7 +29,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'easy',
 		fn: (player) => player.kills + player.assists,
-		treshhold: 30
+		threshold: 30
 	},
 	{
 		id: 'daily-unforgiven-1',
@@ -36,7 +39,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'easy',
 		fn: (player) => player.win && player.deaths <= 6,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'daily-victorious-1',
@@ -46,21 +49,21 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'normal',
 		fn: (player) => player.win,
-		treshhold: 2
+		threshold: 2
 	},
 	{
 		id: 'daily-dragon-slayer',
-		title: 'Dragon slayer',
+		title: 'Dragon Slayer',
 		description: 'Be present for two dragon takedowns in one game.',
 		category: 'objectives',
 		mode: 'daily',
 		difficulty: 'easy',
 		fn: (player) => player.challenges.dragonTakedowns >= 2,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'daily-dragon-rush',
-		title: 'Dragon rush',
+		title: 'Dragon Rush',
 		description: "Secure or assist in killing a dragon before 6'th minute",
 		category: 'objectives',
 		mode: 'daily',
@@ -69,7 +72,7 @@ export const challengesDetails = [
 			player.challenges.earliestDragonTakedown
 				? player.challenges.earliestDragonTakedown < 6 * 60
 				: 0,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'daily-demolition',
@@ -79,7 +82,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'easy',
 		fn: (player) => player.challenges.turretTakedowns >= 3,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'daily-triple-threat',
@@ -89,7 +92,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'normal',
 		fn: (player) => player.tripleKills >= 1,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'daily-annihilator-1',
@@ -99,7 +102,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'easy',
 		fn: (player) => player.totalDamageDealtToChampions >= 30000,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'daily-annihilator-2',
@@ -109,7 +112,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'normal',
 		fn: (player) => player.totalDamageDealtToChampions >= 50000,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'daily-annihilator-3',
@@ -119,7 +122,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'hard',
 		fn: (player) => player.totalDamageDealtToChampions >= 75000,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'daily-immortal',
@@ -129,7 +132,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'hard',
 		fn: (player) => player.deaths === 0,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'daily-last-hit-master-1',
@@ -139,7 +142,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'easy',
 		fn: (player) => player.totalMinionsKilled,
-		treshhold: 100
+		threshold: 100
 	},
 	{
 		id: 'daily-last-hit-master-2',
@@ -149,7 +152,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'normal',
 		fn: (player) => player.totalMinionsKilled,
-		treshhold: 200
+		threshold: 200
 	},
 	{
 		id: 'daily-ward-master',
@@ -159,7 +162,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'normal',
 		fn: (player) => player.challenges.controlWardsPlaced,
-		treshhold: 10
+		threshold: 10
 	},
 	{
 		id: 'daily-map-control-1',
@@ -169,7 +172,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'easy',
 		fn: (player) => player.visionScore,
-		treshhold: 30
+		threshold: 30
 	},
 	{
 		id: 'daily-map-control-2',
@@ -179,7 +182,7 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'normal',
 		fn: (player) => player.visionScore,
-		treshhold: 60
+		threshold: 60
 	},
 	{
 		id: 'daily-map-control-3',
@@ -189,17 +192,17 @@ export const challengesDetails = [
 		mode: 'daily',
 		difficulty: 'hard',
 		fn: (player) => player.visionScore,
-		treshhold: 100
+		threshold: 100
 	},
 	{
 		id: 'daily-bank-breaker',
 		title: 'Bank Breaker',
-		description: 'Earn 10000 gold or more in a single game.',
+		description: 'Earn 10,000 gold or more in a single game.',
 		category: 'economy',
 		mode: 'daily',
 		difficulty: 'normal',
 		fn: (player) => player.goldEarned >= 10000,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'weekly-takedown-spree-1',
@@ -209,7 +212,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'easy',
 		fn: (player) => player.kills + player.assists,
-		treshhold: 100
+		threshold: 100
 	},
 	{
 		id: 'weekly-takedown-spree-2',
@@ -219,7 +222,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'normal',
 		fn: (player) => player.kills + player.assists,
-		treshhold: 200
+		threshold: 200
 	},
 	{
 		id: 'weekly-takedown-spree-3',
@@ -229,7 +232,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'hard',
 		fn: (player) => player.kills + player.assists,
-		treshhold: 300
+		threshold: 300
 	},
 	{
 		id: 'weekly-unforgiven',
@@ -238,8 +241,8 @@ export const challengesDetails = [
 		category: 'wins',
 		mode: 'weekly',
 		difficulty: 'normal',
-		fn: (player) => player.deaths <= 6,
-		treshhold: 5
+		fn: (player) => player.win && player.deaths <= 6,
+		threshold: 5
 	},
 	{
 		id: 'weekly-pentakiller',
@@ -249,7 +252,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'hard',
 		fn: (player) => player.pentaKills >= 1,
-		treshhold: 1
+		threshold: 1
 	},
 	{
 		id: 'weekly-victorious-1',
@@ -259,7 +262,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'easy',
 		fn: (player) => player.win,
-		treshhold: 5
+		threshold: 5
 	},
 	{
 		id: 'weekly-victorious-2',
@@ -269,7 +272,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'normal',
 		fn: (player) => player.win,
-		treshhold: 8
+		threshold: 8
 	},
 	{
 		id: 'weekly-victorious-3',
@@ -279,7 +282,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'hard',
 		fn: (player) => player.win,
-		treshhold: 15
+		threshold: 15
 	},
 	{
 		id: 'weekly-objective-hunter',
@@ -292,7 +295,7 @@ export const challengesDetails = [
 			(player.challenges.dragonTakedowns || 0) +
 			(player.challenges.baronTakedowns || 0) +
 			(player.challenges.turretTakedowns || 0),
-		treshhold: 25
+		threshold: 25
 	},
 	{
 		id: 'weekly-annihilator-1',
@@ -302,7 +305,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'easy',
 		fn: (player) => player.totalDamageDealtToChampions,
-		treshhold: 200000
+		threshold: 200000
 	},
 	{
 		id: 'weekly-annihilator-2',
@@ -312,7 +315,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'normal',
 		fn: (player) => player.totalDamageDealtToChampions,
-		treshhold: 300000
+		threshold: 300000
 	},
 	{
 		id: 'weekly-annihilator-3',
@@ -322,7 +325,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'hard',
 		fn: (player) => player.totalDamageDealtToChampions,
-		treshhold: 500000
+		threshold: 500000
 	},
 	{
 		id: 'weekly-last-hit-master-1',
@@ -332,7 +335,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'easy',
 		fn: (player) => player.totalMinionsKilled,
-		treshhold: 700
+		threshold: 700
 	},
 	{
 		id: 'weekly-last-hit-master-2',
@@ -342,7 +345,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'normal',
 		fn: (player) => player.totalMinionsKilled,
-		treshhold: 1000
+		threshold: 1000
 	},
 	{
 		id: 'weekly-executioner-1',
@@ -352,7 +355,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'easy',
 		fn: (player) => player.kills,
-		treshhold: 50
+		threshold: 50
 	},
 	{
 		id: 'weekly-executioner-2',
@@ -362,7 +365,7 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'normal',
 		fn: (player) => player.kills,
-		treshhold: 100
+		threshold: 100
 	},
 	{
 		id: 'weekly-executioner-3',
@@ -372,36 +375,41 @@ export const challengesDetails = [
 		mode: 'weekly',
 		difficulty: 'hard',
 		fn: (player) => player.kills,
-		treshhold: 200
+		threshold: 200
 	},
 	{
 		id: 'weekly-vision-warrior',
-		title: 'vision Warrior',
+		title: 'Vision Warrior',
 		description: 'Place 80 stealth wards across all matches.',
 		category: 'vision',
 		mode: 'weekly',
 		difficulty: 'normal',
 		fn: (player) => player.challenges.stealthWardsPlaced,
-		treshhold: 80
+		threshold: 80
 	},
 	{
-		id: 'weekly-wealth-accumulator',
-		title: 'Wealth Accumulator',
+		id: 'weekly-wealth-accumulator-1',
+		title: 'Wealth Accumulator I',
 		description: 'Earn 50,000 gold across all matches.',
 		category: 'economy',
 		mode: 'weekly',
 		difficulty: 'easy',
 		fn: (player) => player.goldEarned,
-		treshhold: 50000
+		threshold: 50000
 	},
 	{
-		id: 'weekly-wealth-accumulator',
-		title: 'Wealth Accumulator',
+		id: 'weekly-wealth-accumulator-2',
+		title: 'Wealth Accumulator II',
 		description: 'Earn 100,000 gold across all matches.',
 		category: 'economy',
 		mode: 'weekly',
 		difficulty: 'normal',
 		fn: (player) => player.goldEarned,
-		treshhold: 100000
+		threshold: 100000
 	}
-] as const satisfies ChallengeDetails[];
+] as const satisfies readonly ChallengeDetails[];
+
+// Populate the challenge details map for O(1) lookups
+challengesDetails.forEach((challenge) => {
+	challengeDetailsMap.set(challenge.id, challenge);
+});

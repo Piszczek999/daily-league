@@ -8,7 +8,8 @@ import { getEndOfDay, getEndOfWeek, getRequiredXp, toRegion } from '$lib/helpers
 import { matchService } from '$lib/server/services/matchService';
 import { challengeService } from '$lib/server/services/challengeService';
 import z from 'zod';
-import { challengeReward, challengesDetails } from '$lib/constants/challenges';
+import { challengeDetailsMap, challengeReward } from '$lib/constants/challenges';
+import { config } from '$lib/server/config';
 
 async function checkAuth() {
 	const session = await getSession();
@@ -53,8 +54,10 @@ export const updateRiotId = form(riotIdSchema, async (data) => {
 	});
 	if (!updatedUser.puuid) throw new Error();
 
-	await challengeService.generateDailyChallenges(updatedUser.puuid);
-	await challengeService.generateWeeklyChallenges(updatedUser.puuid);
+	await Promise.all([
+		challengeService.generateDailyChallenges(updatedUser.puuid),
+		challengeService.generateWeeklyChallenges(updatedUser.puuid)
+	]);
 
 	redirect(303, '/app');
 });
@@ -66,9 +69,7 @@ export const update = command(async () => {
 	const user = await getUser();
 	if (!user.puuid) return redirect(303, '/app/riotid');
 
-	// const FIVE_MINUTES = 5 * 60 * 1000;
-	const FIVE_SECONDS = 5 * 1000;
-	if (Date.now() - user.lastUpdatedAt < FIVE_SECONDS) return;
+	if (Date.now() - user.lastUpdatedAt < config.updateCooldown) return;
 	await prisma.user.update({ where: { id: user.id }, data: { lastUpdatedAt: Date.now() } });
 
 	await getUser().refresh();
@@ -113,7 +114,7 @@ export const claimReward = command(z.string(), async (id) => {
 	if (challenge.userPuuid !== user.puuid) invalid('invalid access to challenge');
 	if (!challenge.collectable) invalid('challenge not ready to be collected');
 
-	const details = challengesDetails.find((ch) => challenge.challengeId === ch.id)!;
+	const details = challengeDetailsMap.get(challenge.challengeId)!;
 	await prisma.challenge.update({
 		where: {
 			id: challenge.id

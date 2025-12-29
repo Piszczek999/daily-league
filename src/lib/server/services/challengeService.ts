@@ -1,6 +1,11 @@
-import { challengesDetails } from '$lib/constants/challenges';
-import { getEndOfDay, getEndOfWeek, getStartOfDay, getStartOfWeek } from '$lib/helpers';
-import type { RiotMatch } from '$lib/types/riotTypes';
+import { challengeDetailsMap, challengesDetails } from '$lib/constants/challenges';
+import {
+	extractUserParticipant,
+	getEndOfDay,
+	getEndOfWeek,
+	getStartOfDay,
+	getStartOfWeek
+} from '$lib/helpers';
 import type { Match, Prisma } from '@prisma/client';
 import { config } from '../config';
 import { prisma, type PrismaUser } from '../prisma';
@@ -12,12 +17,9 @@ class ChallengeService {
 		const challenges = await prisma.challenge.findMany({
 			where: { toTime: { gt: user.lastUpdatedAt }, completed: false }
 		});
-		const participantMatches = matches.map(
-			(match) =>
-				(match.data as unknown as RiotMatch).info.participants.find((p) => p.puuid == user.puuid)!
-		);
+		const participantMatches = matches.map((match) => extractUserParticipant(match, user.puuid));
 		for (const challenge of challenges) {
-			const challengeDetails = challengesDetails.find((ch) => ch.id === challenge.challengeId)!;
+			const challengeDetails = challengeDetailsMap.get(challenge.challengeId)!;
 			console.log(`${challengeDetails.title}: ${challengeDetails.description}`);
 
 			let sum = 0;
@@ -25,14 +27,14 @@ class ChallengeService {
 				console.log(`├ ${participant.championName}: ${challengeDetails.fn(participant)}`);
 				sum += Number(challengeDetails.fn(participant));
 
-				if (sum >= challengeDetails.treshhold) {
+				if (sum >= challengeDetails.threshold) {
 					challenge.completed = true;
 					challenge.collectable = true;
 					challenge.progress = sum;
 					// break;
 				}
 			}
-			console.log(`└ Sum: ${sum} / ${challengeDetails.treshhold}`);
+			console.log(`└ Sum: ${sum} / ${challengeDetails.threshold}`);
 			challenge.progress = sum;
 		}
 		await prisma.$transaction(

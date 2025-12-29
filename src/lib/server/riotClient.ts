@@ -1,4 +1,5 @@
 import { RIOT_API_KEY } from '$env/static/private';
+import { SECOND } from '$lib/helpers';
 import type {
 	Platform,
 	Region,
@@ -11,7 +12,7 @@ import type { PrismaUser } from './prisma';
 
 // Configuration constants
 const BASE_URL = 'api.riotgames.com';
-const DEFAULT_TIMEOUT = 10000; // 10 seconds
+const DEFAULT_TIMEOUT = 10 * SECOND;
 
 // Custom error class for better error handling
 class RiotApiError extends Error {

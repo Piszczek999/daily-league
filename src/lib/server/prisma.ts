@@ -35,8 +35,3 @@ export type PrismaUser = {
 	createdAt: Date;
 	updatedAt: Date;
 } & (LinkedPrismaUser | NonLinkedPrismaUser);
-
-export async function getUser(userId: string) {
-	const user = await prisma.user.findFirstOrThrow({ where: { id: userId } });
-	return user as PrismaUser;
-}

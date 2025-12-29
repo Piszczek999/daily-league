@@ -9,10 +9,3 @@ export const getSession = query(async () => {
 
 	return session;
 });
-
-// export const checkRiotId = query(async () => {
-// 	const { event, session } = await getSession();
-// 	if (session?.user.puuid === undefined) redirect(303, '/app/riotid');
-
-// 	return { ...event, ...session };
-// });

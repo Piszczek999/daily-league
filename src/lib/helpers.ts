@@ -1,5 +1,6 @@
 import { error } from '@sveltejs/kit';
-import type { Platform, Region } from './types/riotTypes';
+import type { Platform, Region, RiotMatch } from './types/riotTypes';
+import type { Match } from '@prisma/client';
 
 export function toRegion(platform: Platform): Region {
 	const americas: Platform[] = ['na1', 'br1', 'la1', 'la2'];
@@ -12,6 +13,18 @@ export function toRegion(platform: Platform): Region {
 	if (europe.includes(platform)) return 'europe';
 	if (sea.includes(platform)) return 'sea';
 	error(500, "user's platform not recognized");
+}
+
+export const SECOND = 1000;
+export const MINUTE = 60000;
+export const HOUR = 3600000;
+export const DAY = 86400000;
+
+export function getTimeLeftInMs(val1: number | Date, val2?: number | Date) {
+	const from = val2 === undefined ? new Date() : new Date(val1);
+	const to = val2 === undefined ? new Date(val1) : new Date(val2);
+	const diff = to.getTime() - from.getTime();
+	return Math.max(0, diff);
 }
 
 export function getStartOfDay(timestamp?: number | Date) {
@@ -53,4 +66,11 @@ export function getEndOfWeek(timestamp?: number | Date) {
 
 export function getRequiredXp(level: number) {
 	return 5 * level ** 3 + 50 * level ** 2 + 150 * level;
+}
+
+export function extractUserParticipant(match: Match, userPuuid: string) {
+	const riotMatch = match.data as unknown as RiotMatch;
+	const participant = riotMatch.info.participants.find((p) => p.puuid === userPuuid);
+	if (!participant) throw new Error(`User not found in match ${match.matchId}`);
+	return participant;
 }

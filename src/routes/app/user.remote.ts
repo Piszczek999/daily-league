@@ -29,7 +29,6 @@ export const updateRiotId = form(riotIdSchema, async (data) => {
 	const { session } = await checkAuth();
 
 	const account = await riotClient.getAccountByRiotId(data);
-	console.log(account);
 	if (!account) return invalid('Riot account not found');
 
 	const region = await riotClient.getActiveRegion(account.puuid);

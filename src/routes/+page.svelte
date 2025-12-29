@@ -20,7 +20,7 @@
 					href="/app"
 					class="flex items-center gap-2 bg-white px-8 py-3 text-lg font-semibold text-zinc-900 transition-colors hover:bg-zinc-300"
 				>
-					Get Started <ArrowRight size={20} />
+					Go to App <ArrowRight size={20} />
 				</a>
 				<a
 					href="#features"

@@ -41,7 +41,11 @@
 	let details = $derived(challengesDetails.find((d) => d.id === challenge.challengeId)!);
 	let colorClasses = $derived(colorStyles[details.difficulty]);
 	let sizeClasses = $derived(sizeStyles[size]);
-	let reward = $derived(challengeReward[details.difficulty]);
+	let reward = $derived(
+		details.mode === 'weekly'
+			? challengeReward[details.difficulty] * 3
+			: challengeReward[details.difficulty]
+	);
 	let IconComponent = $derived(categoryIcons[details.category]);
 </script>
 

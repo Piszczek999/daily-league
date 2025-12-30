@@ -1,4 +1,5 @@
 <script lang="ts">
+	import LevelProgressBar from '$lib/components/LevelProgressBar.svelte';
 	import UserPopover from '$lib/components/UserPopover.svelte';
 	import { getUser } from './user.remote';
 
@@ -9,8 +10,11 @@
 	<div class="text-2xl">
 		<a href="/">Daily League</a>
 	</div>
-	<div class="flex items-center gap-2 rounded-full shadow-glow-lg shadow-white">
+	<div class="flex items-center gap-4 rounded-full p-2 shadow-glow shadow-white">
 		{#await getUser() then user}
+			{#if user.puuid}
+				<LevelProgressBar {user} />
+			{/if}
 			<UserPopover {user} />
 		{/await}
 	</div>

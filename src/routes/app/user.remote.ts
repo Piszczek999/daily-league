@@ -70,7 +70,8 @@ export const update = command(async () => {
 
 	await prisma.user.update({
 		where: { id: user.id },
-		data: { lastUpdatedAt: Date.now(), xp: { increment: 10 } }
+		data: { lastUpdatedAt: Date.now() }
+		// data: { lastUpdatedAt: Date.now(), xp: { increment: 10 } }
 	});
 
 	if (getEndOfWeek(user.lastUpdatedAt) < Date.now()) {

@@ -2,7 +2,7 @@
 	import { Eye, Swords, Trophy, Brain, Target, Users, Sparkles, HandCoins } from '@lucide/svelte';
 	import { Progress, type BitsPrimitiveDivAttributes, type WithoutChildrenOrChild } from 'bits-ui';
 	import { challengeDetailsMap, challengeReward } from '$lib/constants/challenges';
-	import { claimReward } from '../../routes/app/user.remote';
+	import { claimReward, getChallenges, getUser } from '../../routes/app/user.remote';
 	import { fly } from 'svelte/transition';
 	import type { Challenge } from '@prisma/client';
 
@@ -72,7 +72,15 @@
 			{#if challenge.collectable}
 				<button
 					class=" bg-white/10 p-4 px-2 font-bold tracking-wider transition text-shadow-md hover:bg-black/20"
-					onclick={async () => await claimReward(challenge.id)}>Collect {reward} XP</button
+					onclick={async () =>
+						await claimReward(challenge.id).updates(
+							getChallenges().withOverride((challenges) =>
+								challenges.map((ch) =>
+									ch.id === challenge.id ? { ...ch, collectable: false } : ch
+								)
+							),
+							getUser().withOverride((user) => ({ ...user, xp: user.xp + reward }))
+						)}>Collect {reward} XP</button
 				>
 			{:else}
 				<div class="flex justify-between p-2 pb-1 text-xs">

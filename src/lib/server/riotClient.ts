@@ -8,7 +8,7 @@ import type {
 	RiotMatch,
 	RiotSummoner
 } from '$lib/types/riotTypes';
-import type { PrismaUser } from './prisma';
+import type { User } from '@prisma/client';
 
 // Configuration constants
 const BASE_URL = 'api.riotgames.com';
@@ -192,7 +192,7 @@ async function getMatch(matchId: string, region: Region): Promise<RiotMatch> {
  * @param options.endTime - End of time range (epoch seconds).
  */
 async function getListOfMatchIds(
-	user: PrismaUser,
+	user: User,
 	options?: {
 		count?: number;
 		start?: number;

@@ -1,16 +1,14 @@
 import { challengeDetailsMap, challengesDetails } from '$lib/constants/challenges';
 import { getEndOfDay, getEndOfWeek, getStartOfDay, getStartOfWeek } from '$lib/helpers';
-import type { Match, Prisma } from '@prisma/client';
+import type { Match, Prisma, User } from '@prisma/client';
 import { config } from '../config';
-import { prisma, type PrismaUser } from '../prisma';
+import { prisma } from '../prisma';
 import type { RiotMatch } from '$lib/types/riotTypes';
 
 class ChallengeService {
-	async evaluateMany(user: PrismaUser, matches: Match[]) {
-		if (!user.puuid) throw new Error();
-
+	async evaluateMany(user: User, matches: Match[]) {
 		const challenges = await prisma.challenge.findMany({
-			where: { toTime: { gt: user.lastUpdatedAt }, completed: false }
+			where: { userId: user.id, toTime: { gt: user.lastUpdatedAt }, completed: false }
 		});
 		for (const challenge of challenges) {
 			const participantMatches = matches
@@ -53,7 +51,7 @@ class ChallengeService {
 		);
 	}
 
-	async generateDailyChallenges(userPuuid: string) {
+	async generateDailyChallenges(user: User) {
 		const dailyChallenges = challengesDetails.filter((ch) => ch.mode === 'daily');
 		if (config.dailyChallengesCount > dailyChallenges.length) throw new Error();
 
@@ -66,12 +64,12 @@ class ChallengeService {
 				challengeId: challenge.id,
 				fromTime: getStartOfDay(),
 				toTime: getEndOfDay(),
-				userPuuid: userPuuid
+				userId: user.id
 			}))
 		});
 	}
 
-	async generateWeeklyChallenges(userPuuid: string) {
+	async generateWeeklyChallenges(user: User) {
 		const weeklyChallenges = challengesDetails.filter((ch) => ch.mode === 'weekly');
 		if (config.weeklyChallengesCount > weeklyChallenges.length) throw new Error();
 
@@ -84,7 +82,7 @@ class ChallengeService {
 				challengeId: challenge.id,
 				fromTime: getStartOfWeek(),
 				toTime: getEndOfWeek(),
-				userPuuid: userPuuid
+				userId: user.id
 			}))
 		});
 	}

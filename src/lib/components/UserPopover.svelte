@@ -5,20 +5,21 @@
 	import UserAvatar from './UserAvatar.svelte';
 	import { signOut } from '$lib/auth-client';
 	import { goto } from '$app/navigation';
-	import type { PrismaUser } from '$lib/server/prisma';
+	import { getUser } from '../../routes/app/user.remote';
 
 	type Props = WithoutChildrenOrChild<Popover.ContentProps> & {
-		user: PrismaUser;
 		avatarRef?: HTMLElement | null;
 	};
 
-	let { user, ref = $bindable(null), avatarRef = $bindable(null), ...restProps }: Props = $props();
+	let { ref = $bindable(null), avatarRef = $bindable(null), ...restProps }: Props = $props();
+
+	const user = $derived(await getUser());
 </script>
 
 <Popover.Root>
 	<Popover.Trigger>
 		<UserAvatar
-			src={user.puuid
+			src={user.profileIconId
 				? `https://ddragon.leagueoflegends.com/cdn/15.24.1/img/profileicon/${user.profileIconId}.png`
 				: user.image}
 			bind:ref={avatarRef}

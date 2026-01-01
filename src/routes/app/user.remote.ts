@@ -1,6 +1,6 @@
 import { command, form, query } from '$app/server';
 import { riotIdSchema } from '$lib/schema';
-import { prisma, type PrismaUser } from '$lib/server/prisma';
+import { prisma } from '$lib/server/prisma';
 import riotClient from '$lib/server/riotClient';
 import { invalid, redirect } from '@sveltejs/kit';
 import { getSession } from './validate.remote';
@@ -13,7 +13,7 @@ import { config } from '$lib/server/config';
 
 async function checkAuth() {
 	const session = await getSession();
-	if (session?.user === undefined) redirect(303, '/sign-in');
+	if (!session) invalid('User not authenticated');
 
 	return session;
 }
@@ -21,8 +21,7 @@ async function checkAuth() {
 export const getUser = query(async () => {
 	console.log('getUser()');
 	const { user } = await checkAuth();
-	const userFromDb = await prisma.user.findFirstOrThrow({ where: { id: user.id } });
-	return userFromDb as PrismaUser;
+	return await prisma.user.findFirstOrThrow({ where: { id: user.id } });
 });
 
 export const updateRiotId = form(riotIdSchema, async (data) => {
@@ -48,15 +47,14 @@ export const updateRiotId = form(riotIdSchema, async (data) => {
 			profileIconId: summoner.profileIconId,
 			gameName: account.gameName,
 			tagLine: account.tagLine,
-			lastUpdatedAt: 0,
+			lastUpdatedAt: Date.now(),
 			region: toRegion(region.region)
 		}
 	});
-	if (!updatedUser.puuid) throw new Error();
 
 	await Promise.all([
-		challengeService.generateDailyChallenges(updatedUser.puuid),
-		challengeService.generateWeeklyChallenges(updatedUser.puuid)
+		challengeService.generateDailyChallenges(updatedUser),
+		challengeService.generateWeeklyChallenges(updatedUser)
 	]);
 
 	redirect(303, '/app');
@@ -64,54 +62,54 @@ export const updateRiotId = form(riotIdSchema, async (data) => {
 
 export const update = command(async () => {
 	console.log('update()');
-	await checkAuth();
-
 	const user = await getUser();
-	if (!user.puuid) return redirect(303, '/app/riotid');
+
+	if (!user.puuid) invalid('RiotId not linked to user');
 
 	if (Date.now() - user.lastUpdatedAt < config.updateCooldown) return;
-	await prisma.user.update({ where: { id: user.id }, data: { lastUpdatedAt: Date.now() } });
 
-	await getUser().refresh();
+	await prisma.user.update({
+		where: { id: user.id },
+		data: { lastUpdatedAt: Date.now(), xp: { increment: 10 } }
+	});
 
 	if (getEndOfWeek(user.lastUpdatedAt) < Date.now()) {
-		await challengeService.generateWeeklyChallenges(user.puuid);
+		await challengeService.generateWeeklyChallenges(user);
 	}
 	if (getEndOfDay(user.lastUpdatedAt) < Date.now()) {
-		await challengeService.generateDailyChallenges(user.puuid);
+		await challengeService.generateDailyChallenges(user);
 	}
 
 	const allMatchIds = await matchService.getAllRelevantMatchIds(user);
-	if (allMatchIds.length === 0) return;
+	if (allMatchIds.length !== 0) {
+		const allMatches = await matchService.getMatches(user, allMatchIds);
 
-	const allMatches = await matchService.getMatches(user, allMatchIds);
+		await challengeService.evaluateMany(user, allMatches);
+	}
 
-	await challengeService.evaluateMany(user, allMatches);
-
+	await getUser().refresh();
 	await getChallenges().refresh();
 });
 
 export const getChallenges = query(async () => {
-	await checkAuth();
 	const user = await getUser();
-	if (!user.puuid) redirect(303, '/app/riotid');
+	if (!user.puuid) invalid('RiotId not linked to user');
 
 	return await prisma.challenge.findMany({
 		where: {
-			userPuuid: user.puuid,
+			userId: user.id,
 			OR: [{ toTime: { gt: user.lastUpdatedAt } }, { collectable: true }]
 		}
 	});
 });
 
 export const claimReward = command(z.string(), async (id) => {
-	await checkAuth();
 	const user = await getUser();
-	if (!user.puuid) redirect(303, '/app/riotid');
+	if (!user.puuid) invalid('RiotId not linked to user');
 
 	const challenge = await prisma.challenge.findFirst({ where: { id: id } });
 	if (!challenge) invalid('challenge not found');
-	if (challenge.userPuuid !== user.puuid) invalid('invalid access to challenge');
+	if (challenge.userId !== user.id) invalid('invalid access to challenge');
 	if (!challenge.collectable) invalid('challenge not ready to be collected');
 
 	const details = challengeDetailsMap.get(challenge.challengeId)!;

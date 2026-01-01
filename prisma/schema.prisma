@@ -15,6 +15,32 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum Region {
+    americas
+    asia
+    europe
+    sea
+}
+
+enum Platform {
+    br1
+    eun1
+    euw1
+    jp1
+    kr
+    la1
+    la2
+    na1
+    oc1
+    tr1
+    ru
+    ph2
+    sg2
+    th2
+    tw2
+    vn2
+}
+
 model User {
     id            String  @id @map("_id")
     name          String
@@ -22,13 +48,13 @@ model User {
     emailVerified Boolean @default(false)
     image         String?
 
-    profileIconId Int?
-    puuid         String?     @unique
-    gameName      String?
-    tagLine       String?
-    platform      String?
-    region        String?
-    lastUpdatedAt Int?
+    profileIconId Int         @default(0)
+    puuid         String      @default("")
+    gameName      String      @default("")
+    tagLine       String      @default("")
+    platform      Platform    @default(eun1)
+    region        Region      @default(europe)
+    lastUpdatedAt Int         @default(0)
     challenges    Challenge[]
     xp            Int         @default(0) // 5 * level^3 + 50 * level^2 + 150 * level
     level         Int         @default(1)
@@ -57,9 +83,9 @@ enum ChallengeMode {
 }
 
 model Challenge {
-    id        String @id @default(auto()) @map("_id") @db.ObjectId
-    userPuuid String
-    user      User   @relation(fields: [userPuuid], references: [puuid])
+    id     String @id @default(auto()) @map("_id") @db.ObjectId
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
 
     challengeId String
     fromTime    Int

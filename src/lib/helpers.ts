@@ -1,6 +1,5 @@
 import { error } from '@sveltejs/kit';
-import type { Platform, Region, RiotMatch } from './types/riotTypes';
-import type { Match } from '@prisma/client';
+import type { Platform, Region } from './types/riotTypes';
 
 export function toRegion(platform: Platform): Region {
 	const americas: Platform[] = ['na1', 'br1', 'la1', 'la2'];

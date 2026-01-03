@@ -1,19 +1,3 @@
-import { error } from '@sveltejs/kit';
-import type { Platform, Region } from './types/riotTypes';
-
-export function toRegion(platform: Platform): Region {
-	const americas: Platform[] = ['na1', 'br1', 'la1', 'la2'];
-	const asia: Platform[] = ['kr', 'jp1'];
-	const europe: Platform[] = ['eun1', 'euw1', 'tr1', 'ru'];
-	const sea: Platform[] = ['oc1', 'sg2', 'tw2', 'vn2'];
-
-	if (americas.includes(platform)) return 'americas';
-	if (asia.includes(platform)) return 'asia';
-	if (europe.includes(platform)) return 'europe';
-	if (sea.includes(platform)) return 'sea';
-	error(500, "user's platform not recognized");
-}
-
 export const SECOND = 1000;
 export const MINUTE = 60000;
 export const HOUR = 3600000;

@@ -1,30 +1,30 @@
 <script lang="ts">
-	import { Eye, Swords, Trophy, Brain, Target, Users, Sparkles, HandCoins } from '@lucide/svelte';
-	import { Progress, type BitsPrimitiveDivAttributes, type WithoutChildrenOrChild } from 'bits-ui';
-	import { challengeDetailsMap, challengeReward } from '$lib/constants/challenges';
-	import { claimReward, getChallenges, getUser } from '../../routes/app/user.remote';
-	import { fly } from 'svelte/transition';
-	import type { Challenge } from '@prisma/client';
+	import { Eye, Swords, Trophy, Brain, Target, Users, Sparkles, HandCoins } from "@lucide/svelte";
+	import { Progress, type BitsPrimitiveDivAttributes, type WithoutChildrenOrChild } from "bits-ui";
+	import { challengeDetailsMap, challengeReward } from "$lib/constants/challenges";
+	import { claimReward, getChallenges, getUser } from "../../routes/app/user.remote";
+	import { fly } from "svelte/transition";
+	import type { Challenge } from "@prisma/client";
 
-	type CardSize = 'sm' | 'md' | 'lg' | 'xl';
+	type CardSize = "sm" | "md" | "lg" | "xl";
 	type Props = WithoutChildrenOrChild<BitsPrimitiveDivAttributes> & {
 		size?: CardSize;
 		challenge: Challenge;
 		delay?: number;
 	};
-	let { size = 'md', challenge, delay = 0, ...props }: Props = $props();
+	let { size = "md", challenge, delay = 0, ...props }: Props = $props();
 
 	const sizeStyles = {
-		sm: { card: 'h-40 w-30', icon: 'size-20' },
-		md: { card: 'h-48 w-36', icon: 'size-24' },
-		lg: { card: 'h-56 w-42', icon: 'size-28' },
-		xl: { card: 'h-64 w-48', icon: 'size-32' }
+		sm: { card: "h-40 w-30", icon: "size-20" },
+		md: { card: "h-48 w-36", icon: "size-24" },
+		lg: { card: "h-56 w-42", icon: "size-28" },
+		xl: { card: "h-64 w-48", icon: "size-32" }
 	};
 
 	const colorStyles = {
-		easy: { bg: 'bg-green-500', shadow: 'shadow-green-500' },
-		normal: { bg: 'bg-yellow-500', shadow: 'shadow-yellow-500' },
-		hard: { bg: 'bg-red-500', shadow: 'shadow-red-500' }
+		easy: { bg: "bg-green-500", shadow: "shadow-green-500" },
+		normal: { bg: "bg-yellow-500", shadow: "shadow-yellow-500" },
+		hard: { bg: "bg-red-500", shadow: "shadow-red-500" }
 	};
 
 	const categoryIcons = {
@@ -42,7 +42,7 @@
 	let colorClasses = $derived(colorStyles[details.difficulty]);
 	let sizeClasses = $derived(sizeStyles[size]);
 	let reward = $derived(
-		details.mode === 'weekly'
+		details.mode === "weekly"
 			? challengeReward[details.difficulty] * 3
 			: challengeReward[details.difficulty]
 	);

@@ -1,17 +1,10 @@
-import { RIOT_API_KEY } from '$env/static/private';
-import { SECOND } from '$lib/helpers';
-import type {
-	Platform,
-	Region,
-	RiotAccount,
-	RiotActiveRegion,
-	RiotMatch,
-	RiotSummoner
-} from '$lib/types/riotTypes';
-import type { User } from '@prisma/client';
+import { RIOT_API_KEY } from "$env/static/private";
+import { SECOND } from "$lib/helpers";
+import type { RiotAccount, RiotActiveRegion, RiotMatch, RiotSummoner } from "$lib/types/riotTypes";
+import type { Platform, Region, User } from "@prisma/client";
 
 // Configuration constants
-const BASE_URL = 'api.riotgames.com';
+const BASE_URL = "api.riotgames.com";
 const DEFAULT_TIMEOUT = 10 * SECOND;
 
 // Custom error class for better error handling
@@ -22,7 +15,7 @@ class RiotApiError extends Error {
 		message?: string
 	) {
 		super(message || `Riot API Error: ${status} ${statusText}`);
-		this.name = 'RiotApiError';
+		this.name = "RiotApiError";
 	}
 }
 
@@ -82,7 +75,7 @@ async function riotFetch<T>(
 			const response = await fetch(url, {
 				...options,
 				headers: {
-					'X-Riot-Token': RIOT_API_KEY,
+					"X-Riot-Token": RIOT_API_KEY,
 					...options.headers
 				},
 				signal: controller.signal
@@ -94,7 +87,7 @@ async function riotFetch<T>(
 				}
 
 				// Include response body for better debugging
-				let errorMessage = '';
+				let errorMessage = "";
 				try {
 					const errorData = await response.json();
 					errorMessage = errorData.message || JSON.stringify(errorData);
@@ -113,12 +106,12 @@ async function riotFetch<T>(
 				throw error;
 			}
 
-			if (error instanceof Error && error.name === 'AbortError') {
-				console.error('Riot API request timed out');
-				throw new Error('Request timed out');
+			if (error instanceof Error && error.name === "AbortError") {
+				console.error("Riot API request timed out");
+				throw new Error("Request timed out");
 			}
 
-			console.error('Unexpected error in Riot API call:', error);
+			console.error("Unexpected error in Riot API call:", error);
 			throw error;
 		} finally {
 			clearTimeout(timeoutId);
@@ -133,10 +126,10 @@ async function riotFetch<T>(
  */
 async function getActiveRegion(
 	puuid: string,
-	game: string = 'lol'
+	game: string = "lol"
 ): Promise<RiotActiveRegion | null> {
 	return riotFetch<RiotActiveRegion>(
-		'europe',
+		"europe",
 		`/riot/account/v1/region/by-game/${game}/by-puuid/${puuid}`
 	);
 }
@@ -146,7 +139,7 @@ async function getActiveRegion(
  * @param puuid - Player Universally Unique Identifier
  */
 async function getAccountByPuuid(puuid: string): Promise<RiotAccount | null> {
-	return riotFetch<RiotAccount>('europe', `/riot/account/v1/accounts/by-puuid/${puuid}`);
+	return riotFetch<RiotAccount>("europe", `/riot/account/v1/accounts/by-puuid/${puuid}`);
 }
 
 /**
@@ -163,7 +156,7 @@ async function getAccountByRiotId(inputs: {
 	const encodedTagLine = encodeURIComponent(inputs.tagLine);
 
 	return riotFetch<RiotAccount>(
-		'europe',
+		"europe",
 		`/riot/account/v1/accounts/by-riot-id/${encodedGameName}/${encodedTagLine}`
 	);
 }
@@ -196,7 +189,7 @@ async function getListOfMatchIds(
 	options?: {
 		count?: number;
 		start?: number;
-		type?: 'ranked' | 'normal' | 'tourney' | 'tutorial';
+		type?: "ranked" | "normal" | "tourney" | "tutorial";
 		queue?: number;
 		startTime?: number;
 		endTime?: number;
@@ -205,17 +198,17 @@ async function getListOfMatchIds(
 	if (!user.puuid) throw new Error();
 
 	const params = new URLSearchParams();
-	if (options?.count !== undefined) params.append('count', options.count.toString());
-	if (options?.start !== undefined) params.append('start', options.start.toString());
-	if (options?.type !== undefined) params.append('type', options.type.toString());
-	if (options?.queue !== undefined) params.append('queue', options.queue.toString());
+	if (options?.count !== undefined) params.append("count", options.count.toString());
+	if (options?.start !== undefined) params.append("start", options.start.toString());
+	if (options?.type !== undefined) params.append("type", options.type.toString());
+	if (options?.queue !== undefined) params.append("queue", options.queue.toString());
 	if (options?.endTime !== undefined)
-		params.append('endTime', Math.floor(options.endTime / 1000).toString());
+		params.append("endTime", Math.floor(options.endTime / 1000).toString());
 	if (options?.startTime !== undefined)
-		params.append('startTime', Math.floor(options.startTime / 1000).toString());
+		params.append("startTime", Math.floor(options.startTime / 1000).toString());
 
 	const queryString = params.toString();
-	const path = `/lol/match/v5/matches/by-puuid/${user.puuid}/ids${queryString ? `?${queryString}` : ''}`;
+	const path = `/lol/match/v5/matches/by-puuid/${user.puuid}/ids${queryString ? `?${queryString}` : ""}`;
 
 	return (await riotFetch<string[]>(user.region, path)) ?? [];
 }

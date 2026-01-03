@@ -1,4 +1,4 @@
-import { SECOND } from '$lib/helpers';
+import { SECOND } from "$lib/helpers";
 
 export const config = {
 	dailyChallengesCount: 6,

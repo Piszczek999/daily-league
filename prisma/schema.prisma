@@ -34,9 +34,7 @@ enum Platform {
     oc1
     tr1
     ru
-    ph2
     sg2
-    th2
     tw2
     vn2
 }

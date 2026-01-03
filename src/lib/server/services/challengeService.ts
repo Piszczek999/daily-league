@@ -1,9 +1,9 @@
-import { challengeDetailsMap, challengesDetails } from '$lib/constants/challenges';
-import { getEndOfDay, getEndOfWeek, getStartOfDay, getStartOfWeek } from '$lib/helpers';
-import type { Match, Prisma, User } from '@prisma/client';
-import { config } from '../config';
-import { prisma } from '../prisma';
-import type { RiotMatch } from '$lib/types/riotTypes';
+import { challengeDetailsMap, challengesDetails } from "$lib/constants/challenges";
+import { getEndOfDay, getEndOfWeek, getStartOfDay, getStartOfWeek } from "$lib/helpers";
+import type { Match, Prisma, User } from "@prisma/client";
+import { config } from "../config";
+import { prisma } from "../prisma";
+import type { RiotMatch } from "$lib/types/riotTypes";
 
 class ChallengeService {
 	async evaluateMany(user: User, matches: Match[]) {
@@ -52,15 +52,15 @@ class ChallengeService {
 	}
 
 	async generateDailyChallenges(user: User) {
-		const dailyChallenges = challengesDetails.filter((ch) => ch.mode === 'daily');
+		const dailyChallenges = challengesDetails.filter((ch) => ch.mode === "daily");
 		if (config.dailyChallengesCount > dailyChallenges.length) throw new Error();
 
-		const challenges = [...dailyChallenges]
+		const randomChallenges = [...dailyChallenges]
 			.sort(() => Math.random() - 0.5)
 			.slice(0, config.dailyChallengesCount);
 
 		await prisma.challenge.createMany({
-			data: challenges.map<Prisma.ChallengeCreateManyInput>((challenge) => ({
+			data: randomChallenges.map<Prisma.ChallengeCreateManyInput>((challenge) => ({
 				challengeId: challenge.id,
 				fromTime: getStartOfDay(),
 				toTime: getEndOfDay(),
@@ -70,15 +70,15 @@ class ChallengeService {
 	}
 
 	async generateWeeklyChallenges(user: User) {
-		const weeklyChallenges = challengesDetails.filter((ch) => ch.mode === 'weekly');
+		const weeklyChallenges = challengesDetails.filter((ch) => ch.mode === "weekly");
 		if (config.weeklyChallengesCount > weeklyChallenges.length) throw new Error();
 
-		const challenges = [...weeklyChallenges]
+		const randomChallenges = [...weeklyChallenges]
 			.sort(() => Math.random() - 0.5)
 			.slice(0, config.weeklyChallengesCount);
 
 		await prisma.challenge.createMany({
-			data: challenges.map<Prisma.ChallengeCreateManyInput>((challenge) => ({
+			data: randomChallenges.map<Prisma.ChallengeCreateManyInput>((challenge) => ({
 				challengeId: challenge.id,
 				fromTime: getStartOfWeek(),
 				toTime: getEndOfWeek(),

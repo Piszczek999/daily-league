@@ -1,7 +1,7 @@
-import { prisma } from '../prisma';
-import riotClient from '$lib/server/riotClient';
-import { getEndOfWeek, getStartOfWeek } from '$lib/helpers';
-import type { Match, User } from '@prisma/client';
+import { prisma } from "../prisma";
+import riotClient from "$lib/server/riotClient";
+import { getEndOfWeek, getStartOfWeek } from "$lib/helpers";
+import type { Match, Region, User } from "@prisma/client";
 
 class MatchService {
 	async getAllRelevantMatchIds(user: User) {
@@ -34,7 +34,7 @@ class MatchService {
 		});
 	}
 
-	async getMatches(user: User, matchIds: string[]): Promise<Match[]> {
+	async getMatches(region: Region, matchIds: string[]): Promise<Match[]> {
 		const existingMatchIds = new Set(
 			(
 				await prisma.match.findMany({
@@ -53,9 +53,7 @@ class MatchService {
 		const newMatches = [];
 		for (let i = 0; i < missingMatchIds.length; i += BATCH_SIZE) {
 			const batch = missingMatchIds.slice(i, i + BATCH_SIZE);
-			const batchMatches = await Promise.all(
-				batch.map((id) => riotClient.getMatch(id, user.region))
-			);
+			const batchMatches = await Promise.all(batch.map((id) => riotClient.getMatch(id, region)));
 			newMatches.push(...batchMatches);
 
 			// Optional: add delay between batches to avoid rate limiting

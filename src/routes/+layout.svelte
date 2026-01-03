@@ -1,7 +1,7 @@
 <script lang="ts">
-	import '../app.css';
-	import favicon from '$lib/assets/favicon.svg';
-	import { Tooltip } from 'bits-ui';
+	import "../app.css";
+	import favicon from "$lib/assets/favicon.svg";
+	import { Tooltip } from "bits-ui";
 
 	let { children } = $props();
 </script>

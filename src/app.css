@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400..900&family=Oxanium:wght@200..800&display=swap');
-@import 'tailwindcss';
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400..900&family=Oxanium:wght@200..800&display=swap");
+@import "tailwindcss";
 
 @theme {
-	--font-oxanium: 'Oxanium', serif;
-	--font-cinzel: 'Cinzel', serif;
-	--font-anton: 'Anton', serif;
+	--font-oxanium: "Oxanium", serif;
+	--font-cinzel: "Cinzel", serif;
+	--font-anton: "Anton", serif;
 	--shadow-glow-sm: 0 0 100px -10px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
 	--shadow-glow: 0 0 100px 0px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
 	--shadow-glow-lg: 0 0 100px 5px var(--tw-shadow-color, rgb(0 0 0 / 0.25));

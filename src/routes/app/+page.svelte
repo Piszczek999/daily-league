@@ -1,24 +1,24 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
-	import ChallengeList from '$lib/components/ChallengeList.svelte';
-	import { challengeDetailsMap } from '$lib/constants/challenges';
-	import { getEndOfDay, getEndOfWeek, getTimeLeftInMs, SECOND } from '$lib/helpers.js';
-	import { getChallenges, getUser, update } from './user.remote.js';
+	import Button from "$lib/components/Button.svelte";
+	import ChallengeList from "$lib/components/ChallengeList.svelte";
+	import { challengeDetailsMap } from "$lib/constants/challenges";
+	import { getEndOfDay, getEndOfWeek, getTimeLeftInMs, SECOND } from "$lib/helpers.js";
+	import { getChallenges, getUser, update } from "./user.remote.js";
 
 	let time = $state(new Date());
 	const user = $derived(await getUser());
 	const challenges = $derived(await getChallenges());
 	const dailyChallenges = $derived(
-		challenges.filter((ch) => challengeDetailsMap.get(ch.challengeId)!.mode === 'daily')
+		challenges.filter((ch) => challengeDetailsMap.get(ch.challengeId)!.mode === "daily")
 	);
 	const weeklyChallenges = $derived(
-		challenges.filter((ch) => challengeDetailsMap.get(ch.challengeId)!.mode === 'weekly')
+		challenges.filter((ch) => challengeDetailsMap.get(ch.challengeId)!.mode === "weekly")
 	);
 
 	function getTimeLeftDaily() {
 		const timeLeft = getTimeLeftInMs(time, getEndOfDay(user.lastUpdatedAt));
 
-		if (timeLeft === 0) return 'Day ended';
+		if (timeLeft === 0) return "Day ended";
 
 		const hours = Math.floor(timeLeft / (1000 * 60 * 60));
 		const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
@@ -30,7 +30,7 @@
 	function getTimeLeftWeekly() {
 		const timeLeft = getTimeLeftInMs(time, getEndOfWeek(user.lastUpdatedAt));
 
-		if (timeLeft === 0) return 'Week ended';
+		if (timeLeft === 0) return "Week ended";
 
 		const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
 		const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -42,7 +42,7 @@
 	function getUpdateTimeLeft() {
 		const timeLeft = getTimeLeftInMs(time, SECOND * 10 + user.lastUpdatedAt);
 
-		if (timeLeft === 0) return 'update';
+		if (timeLeft === 0) return "update";
 
 		const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
 		const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import LevelProgressBar from '$lib/components/LevelProgressBar.svelte';
-	import UserPopover from '$lib/components/UserPopover.svelte';
+	import LevelProgressBar from "$lib/components/LevelProgressBar.svelte";
+	import UserPopover from "$lib/components/UserPopover.svelte";
 
 	const { children } = $props();
 </script>

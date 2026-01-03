@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Trophy, Zap, Target, Users, ArrowRight } from '@lucide/svelte';
+	import { Trophy, Zap, Target, Users, ArrowRight } from "@lucide/svelte";
 </script>
 
 <div class="min-h-screen overflow-hidden bg-linear-to-b from-zinc-900 to-black text-white">
@@ -100,7 +100,7 @@
 		<div class="mx-auto max-w-6xl">
 			<h2 class="mb-16 text-center text-4xl font-bold">Challenge Categories</h2>
 			<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-				{#each [{ title: 'Combat', desc: 'Master teamfights and 1v1 scenarios' }, { title: 'Vision Control', desc: 'Improve warding and map awareness' }, { title: 'Objectives', desc: 'Focus on turrets, dragons, and Baron' }, { title: 'Economy', desc: 'Optimize farming and gold generation' }, { title: 'Macro Play', desc: 'Enhance map rotations and timings' }, { title: 'Champion Mastery', desc: 'Deepen your champion pool knowledge' }] as category}
+				{#each [{ title: "Combat", desc: "Master teamfights and 1v1 scenarios" }, { title: "Vision Control", desc: "Improve warding and map awareness" }, { title: "Objectives", desc: "Focus on turrets, dragons, and Baron" }, { title: "Economy", desc: "Optimize farming and gold generation" }, { title: "Macro Play", desc: "Enhance map rotations and timings" }, { title: "Champion Mastery", desc: "Deepen your champion pool knowledge" }] as category}
 					<div
 						class="border border-zinc-700 bg-zinc-800 p-6 transition-colors hover:border-purple-500"
 					>

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Challenge } from '@prisma/client';
-	import ChallengeCard from './ChallengeCard.svelte';
+	import type { Challenge } from "@prisma/client";
+	import ChallengeCard from "./ChallengeCard.svelte";
 
 	type Props = {
 		challenges: Challenge[];

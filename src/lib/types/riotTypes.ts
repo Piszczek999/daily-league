@@ -1,3 +1,5 @@
+import type { Platform } from "@prisma/client";
+
 export interface RiotMatch {
 	metadata: RiotMatchMetadata;
 	info: RiotMatchInfo;
@@ -216,7 +218,7 @@ export interface RiotPlayerData {
 }
 
 export interface RiotChallenges {
-	'12AssistStreakCount': number;
+	"12AssistStreakCount": number;
 	HealFromMapSources: number;
 	InfernalScalePickup: number;
 	SWARM_DefeatAatrox: number;
@@ -369,31 +371,6 @@ export interface RiotPerkStyle {
 	style: number;
 }
 
-export const PLATFORMS = [
-	'br1',
-	'eun1',
-	'euw1',
-	'jp1',
-	'kr',
-	'la1',
-	'la2',
-	'na1',
-	'oc1',
-	'tr1',
-	'ru',
-	'ph2',
-	'sg2',
-	'th2',
-	'tw2',
-	'vn2'
-] as const;
-
-export const REGIONS = ['americas', 'asia', 'europe', 'sea'] as const;
-
-export type Platform = (typeof PLATFORMS)[number];
-
-export type Region = (typeof REGIONS)[number];
-
 export interface RiotAccount {
 	puuid: string;
 	gameName: string;
@@ -409,6 +386,6 @@ export interface RiotSummoner {
 
 export interface RiotActiveRegion {
 	puuid: string;
-	game: 'lol' | 'tft';
+	game: "lol" | "tft";
 	region: Platform;
 }

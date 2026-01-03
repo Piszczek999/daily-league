@@ -389,7 +389,7 @@ export const challengesDetails = [
 	},
 	{
 		id: "weekly-wealth-accumulator-1",
-		title: "Wealth Accumulator I",
+		title: "Wealth I",
 		description: "Earn 50,000 gold across all matches.",
 		category: "economy",
 		mode: "weekly",
@@ -399,7 +399,7 @@ export const challengesDetails = [
 	},
 	{
 		id: "weekly-wealth-accumulator-2",
-		title: "Wealth Accumulator II",
+		title: "Wealth II",
 		description: "Earn 100,000 gold across all matches.",
 		category: "economy",
 		mode: "weekly",

@@ -71,7 +71,7 @@
 			<!-- Footer -->
 			{#if challenge.collectable}
 				<button
-					class=" bg-white/10 p-4 px-2 font-bold tracking-wider transition text-shadow-md hover:bg-black/20"
+					class="bg-white/10 p-4 px-2 font-bold tracking-wider transition text-shadow-md hover:bg-black/20"
 					onclick={async () =>
 						await claimReward(challenge.id).updates(
 							getChallenges().withOverride((challenges) =>
@@ -82,6 +82,12 @@
 							getUser().withOverride((user) => ({ ...user, xp: user.xp + reward }))
 						)}>Collect {reward} XP</button
 				>
+			{:else if challenge.completed}
+				<div
+					class="bg-black/20 p-4 px-2 text-center font-bold tracking-wider transition text-shadow-md"
+				>
+					Completed
+				</div>
 			{:else}
 				<div class="flex justify-between p-2 pb-1 text-xs">
 					<span class="text-shadow-md">{challenge.progress}/{details.threshold}</span>

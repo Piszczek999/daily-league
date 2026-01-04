@@ -6,7 +6,7 @@
 
 <div class="flex w-full flex-col items-center gap-6">
 	<div
-		class="flex w-full flex-col gap-8 rounded-2xl p-6 shadow-glow-sm/50 shadow-amber-300 sm:max-w-lg"
+		class="mb-16 flex w-full flex-col gap-8 rounded-2xl p-6 shadow-glow-sm/50 shadow-amber-300 sm:max-w-lg"
 	>
 		<h1 class="border-b border-amber-400 pb-4 text-center text-xl font-semibold">Leaderboard</h1>
 

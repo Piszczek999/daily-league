@@ -20,11 +20,11 @@ class ChallengeService {
 				)
 				.map((match) => extractUserParticipant(match, user.puuid));
 			const challengeDetails = challengeDetailsMap.get(challenge.challengeId)!;
-			console.log(`${challengeDetails.title}: ${challengeDetails.description}`);
+			// console.log(`${challengeDetails.title}: ${challengeDetails.description}`);
 
 			let sum = 0;
 			for (const participant of participantMatches) {
-				console.log(`├ ${participant.championName}: ${challengeDetails.fn(participant)}`);
+				// console.log(`├ ${participant.championName}: ${challengeDetails.fn(participant)}`);
 				sum += Number(challengeDetails.fn(participant));
 
 				if (sum >= challengeDetails.threshold) {
@@ -34,7 +34,7 @@ class ChallengeService {
 					// break;
 				}
 			}
-			console.log(`└ Sum: ${sum} / ${challengeDetails.threshold}`);
+			// console.log(`└ Sum: ${sum} / ${challengeDetails.threshold}`);
 			challenge.progress = sum;
 		}
 		await prisma.$transaction(

@@ -18,18 +18,20 @@
 		error = "";
 		try {
 			if (mode === "signin") {
-				await signIn.email({
+				const res = await signIn.email({
 					email,
 					password,
 					callbackURL: "/app"
 				});
+				error = res.error?.message ?? "";
 			} else {
-				await signUp.email({
+				const res = await signUp.email({
 					name,
 					email,
 					password,
 					callbackURL: "/app"
 				});
+				error = res.error?.message ?? "";
 			}
 			goto("/app");
 		} catch (err) {
@@ -45,6 +47,7 @@
 		class="flex w-80 flex-col items-center gap-2 divide-y divide-zinc-700 border border-zinc-700 bg-zinc-800 p-4 shadow-lg"
 	>
 		<h1 class="py-6 text-center text-xl">Login to <b>DailyLeague</b></h1>
+
 		<div class="flex w-full flex-col gap-4 p-2">
 			<!-- Email/Password Form -->
 			<form onsubmit={handleEmailAuth} class="flex flex-col gap-4">

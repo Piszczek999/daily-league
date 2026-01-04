@@ -12,20 +12,30 @@ import { config } from "$lib/server/config";
 import { auth } from "$lib/server/auth";
 import { PLATFORM_TO_REGION } from "$lib/constants/regions";
 
-const userLocks = new Map<string, Promise<unknown>>();
+const locks = new Map<string, Promise<unknown>>();
 
-async function withUserLock<T>(userId: string, fn: () => Promise<T>): Promise<T | null> {
-	const existingLock = userLocks.get(userId);
+async function withAbortLock<T>(lockId: string, fn: () => Promise<T>): Promise<T | null> {
+	const existingLock = locks.get(lockId);
 	if (existingLock) {
-		await existingLock.catch(() => {}); // Wait for existing operation
-		return null; // Abort this call
+		await existingLock.catch(() => {});
+		return null; // Abort
 	}
 
-	const lockPromise = fn().finally(() => {
-		userLocks.delete(userId);
-	});
+	const lockPromise = fn().finally(() => locks.delete(lockId));
+	locks.set(lockId, lockPromise);
+	return await lockPromise;
+}
 
-	userLocks.set(userId, lockPromise as Promise<void>);
+// For claimReward - queue them
+async function withQueueLock<T>(lockId: string, fn: () => Promise<T>): Promise<T> {
+	const existingLock = locks.get(lockId);
+	if (existingLock) {
+		await existingLock.catch(() => {});
+		return withQueueLock(lockId, fn); // Retry recursively
+	}
+
+	const lockPromise = fn().finally(() => locks.delete(lockId));
+	locks.set(lockId, lockPromise);
 	return await lockPromise;
 }
 
@@ -40,39 +50,46 @@ export const getUser = query(async () => {
 
 export const updateRiotId = form(riotIdSchema, async (data) => {
 	console.log("updateRiotId()");
-	let user = await getUser();
+	const user = await getUser();
 
-	if (user.puuid) return invalid("Riot account already linked to this account");
+	const updatedUser = await withAbortLock(user.id, async () => {
+		const currentUser = await prisma.user.findFirst({ where: { id: user.id } });
+		if (!currentUser) throw new Error();
 
-	const account = await riotClient.getAccountByRiotId(data);
-	if (!account) return invalid("Riot account not found");
+		if (currentUser.puuid) return invalid("Riot account already linked to this account");
+		const account = await riotClient.getAccountByRiotId(data);
+		if (!account) return invalid("Riot account not found");
 
-	const regionResponse = await riotClient.getActiveRegion(account.puuid);
-	if (!regionResponse)
-		return invalid("Could not find an active region associated with the account");
+		const regionResponse = await riotClient.getActiveRegion(account.puuid);
+		if (!regionResponse)
+			return invalid("Could not find an active region associated with the account");
 
-	const summoner = await riotClient.getSummoner(account.puuid, regionResponse.region);
-	if (!summoner) return invalid("Summoner not found");
+		const summoner = await riotClient.getSummoner(account.puuid, regionResponse.region);
+		if (!summoner) return invalid("Summoner not found");
 
-	user.lastUpdatedAt = Date.now() - config.updateCooldown;
-	user = await prisma.user.update({
-		where: { id: user.id },
-		data: {
-			puuid: account.puuid,
-			platform: regionResponse.region,
-			profileIconId: summoner.profileIconId,
-			gameName: account.gameName,
-			tagLine: account.tagLine,
-			lastUpdatedAt: Date.now() - config.updateCooldown,
-			region: PLATFORM_TO_REGION[regionResponse.region]
-		}
+		currentUser.lastUpdatedAt = Date.now() - config.updateCooldown;
+		return await prisma.user.update({
+			where: { id: user.id },
+			data: {
+				puuid: account.puuid,
+				platform: regionResponse.region,
+				profileIconId: summoner.profileIconId,
+				gameName: account.gameName,
+				tagLine: account.tagLine,
+				lastUpdatedAt: Date.now() - config.updateCooldown,
+				region: PLATFORM_TO_REGION[regionResponse.region]
+			}
+		});
 	});
+
+	if (!updatedUser) return;
+
 	await Promise.all([
 		challengeService.generateDailyChallenges(user),
 		challengeService.generateWeeklyChallenges(user)
 	]);
 
-	getUser().set(user);
+	getUser().set(updatedUser);
 	// await getChallenges().refresh();
 	await update();
 
@@ -83,7 +100,7 @@ export const update = command(async () => {
 	const user = await getUser();
 	if (!user.puuid) error(400, "RiotId not linked to user");
 
-	const updatedUser = await withUserLock(user.id, async () => {
+	const updatedUser = await withAbortLock(user.id, async () => {
 		// Atomically check cooldown and claim the update
 		const currentUser = await prisma.user.findUnique({ where: { id: user.id } });
 		if (!currentUser) throw new Error("User not found");
@@ -139,12 +156,15 @@ export const claimReward = command(z.string(), async (id) => {
 	const user = await getUser();
 	if (!user.puuid) error(400, "RiotId not linked to user");
 
-	const updatedUser = await withUserLock(user.id, async () => {
+	const updatedUser = await withQueueLock(user.id, async () => {
+		const currentUser = await prisma.user.findFirst({ where: { id: user.id } });
+		if (!currentUser) throw new Error();
+
 		// Find and validate challenge
 		const challenge = await prisma.challenge.findFirst({
 			where: {
 				id: id,
-				userId: user.id,
+				userId: currentUser.id,
 				collectable: true
 			}
 		});
@@ -163,8 +183,8 @@ export const claimReward = command(z.string(), async (id) => {
 		reward *= details.mode === "weekly" ? 3 : 1;
 
 		// Calculate new XP and level
-		let newXp = user.xp + reward;
-		let newLevel = user.level;
+		let newXp = currentUser.xp + reward;
+		let newLevel = currentUser.level;
 		while (newXp >= getRequiredXp(newLevel)) {
 			newXp -= getRequiredXp(newLevel);
 			newLevel += 1;
@@ -172,7 +192,7 @@ export const claimReward = command(z.string(), async (id) => {
 
 		// Update user
 		return await prisma.user.update({
-			where: { id: user.id },
+			where: { id: currentUser.id },
 			data: { xp: newXp, level: newLevel }
 		});
 	});

@@ -2,7 +2,6 @@
 	import { updateRiotId } from "../user.remote";
 	import Button from "$lib/components/Button.svelte";
 	import { riotIdSchema } from "$lib/schema";
-	import { LoaderCircle } from "@lucide/svelte";
 </script>
 
 <form {...updateRiotId.preflight(riotIdSchema)}>

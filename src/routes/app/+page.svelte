@@ -2,7 +2,14 @@
 	import Button from "$lib/components/Button.svelte";
 	import ChallengeList from "$lib/components/ChallengeList.svelte";
 	import { challengeDetailsMap } from "$lib/constants/challenges";
-	import { getEndOfDay, getEndOfWeek, getTimeLeftInMs, SECOND } from "$lib/helpers.js";
+	import {
+		getEndOfDay,
+		getTimeLeftDaily,
+		getTimeLeftInMs,
+		getTimeLeftWeekly,
+		SECOND
+	} from "$lib/helpers.js";
+	import { Trophy } from "@lucide/svelte";
 	import { getChallenges, getUser, update } from "./user.remote.js";
 
 	let time = $state(new Date());
@@ -17,30 +24,6 @@
 	const buttonDisabled = $derived(
 		update.pending !== 0 || getTimeLeftInMs(time, SECOND * 10 + user.lastUpdatedAt) > 0
 	);
-
-	function getTimeLeftDaily() {
-		const timeLeft = getTimeLeftInMs(time, getEndOfDay(user.lastUpdatedAt));
-
-		if (timeLeft === 0) return "Day ended";
-
-		const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-		const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-		const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-		return `${hours}h ${minutes}m ${seconds}s`;
-	}
-
-	function getTimeLeftWeekly() {
-		const timeLeft = getTimeLeftInMs(time, getEndOfWeek(user.lastUpdatedAt));
-
-		if (timeLeft === 0) return "Week ended";
-
-		const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-		const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-		const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-
-		return `${days}d ${hours}h ${minutes}m`;
-	}
 
 	function getUpdateTimeLeft() {
 		const timeLeft = getTimeLeftInMs(time, SECOND * 10 + user.lastUpdatedAt);
@@ -71,6 +54,13 @@
 </script>
 
 <div class="flex w-full flex-col items-center gap-6">
+	<a
+		href="/app/leaderboard"
+		class="flex-center gap-2 rounded-full px-4 py-2 text-xl text-amber-200 shadow-glow-sm/80 shadow-amber-200 hover:bg-white/3"
+	>
+		<Trophy />
+		Leaderboard</a
+	>
 	<div
 		class="flex w-full flex-col items-center justify-center gap-8 xl:max-w-6xl xl:flex-row xl:items-start xl:justify-between"
 	>
@@ -80,7 +70,9 @@
 				challenges={dailyChallenges}
 				fallback="No Challenges available. Please click 'update' button"
 			/>
-			<span class="text-center text-zinc-400">Time Left: {getTimeLeftDaily()}</span>
+			<span class="text-center text-zinc-400"
+				>Time Left: {getTimeLeftDaily(time, user.lastUpdatedAt)}</span
+			>
 		</div>
 
 		<div class="flex flex-col gap-6">
@@ -89,7 +81,9 @@
 				challenges={weeklyChallenges}
 				fallback="No Challenges available. Please click 'update' button"
 			/>
-			<span class="text-center text-zinc-400">Time Left: {getTimeLeftWeekly()}</span>
+			<span class="text-center text-zinc-400"
+				>Time Left: {getTimeLeftWeekly(time, user.lastUpdatedAt)}</span
+			>
 		</div>
 	</div>
 	<Button

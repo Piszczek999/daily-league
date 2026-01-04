@@ -50,3 +50,31 @@ export function getEndOfWeek(timestamp?: number | Date) {
 export function getRequiredXp(level: number) {
 	return 5 * level ** 3 + 50 * level ** 2 + 150 * level;
 }
+
+export function getTimeLeftDaily(time?: number | Date, referTime?: number | Date) {
+	const date = time === undefined ? new Date() : new Date(time);
+	const endOfDayTime = referTime ? getEndOfDay(referTime) : getEndOfDay();
+	const timeLeft = getTimeLeftInMs(date, endOfDayTime);
+
+	if (timeLeft === 0) return "Day ended";
+
+	const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+	const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+	const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+	return `${hours}h ${minutes}m ${seconds}s`;
+}
+
+export function getTimeLeftWeekly(time?: number | Date, referTime?: number | Date) {
+	const date = time === undefined ? new Date() : new Date(time);
+	const endOfWeekTime = referTime ? getEndOfDay(referTime) : getEndOfDay();
+	const timeLeft = getTimeLeftInMs(date, endOfWeekTime);
+
+	if (timeLeft === 0) return "Week ended";
+
+	const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+	const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+	return `${days}d ${hours}h ${minutes}m`;
+}

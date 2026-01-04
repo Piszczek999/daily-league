@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Avatar, type WithoutChildrenOrChild } from 'bits-ui';
+	import { Avatar, type WithoutChildrenOrChild } from "bits-ui";
 
 	type Props = WithoutChildrenOrChild<Avatar.RootProps> & {
 		src: string | undefined | null;

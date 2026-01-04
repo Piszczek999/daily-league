@@ -182,3 +182,19 @@ export const claimReward = command(z.string(), async (id) => {
 	getUser().set(updatedUser);
 	await getChallenges().refresh();
 });
+
+export const getLeaderboard = query(async () => {
+	return await prisma.user.findMany({
+		where: { profileIconId: { not: 0 } },
+		orderBy: [{ level: "desc" }, { xp: "desc" }],
+		select: {
+			name: true,
+			gameName: true,
+			profileIconId: true,
+			tagLine: true,
+			level: true,
+			xp: true
+		},
+		take: 10
+	});
+});

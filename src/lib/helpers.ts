@@ -67,7 +67,7 @@ export function getTimeLeftDaily(time?: number | Date, referTime?: number | Date
 
 export function getTimeLeftWeekly(time?: number | Date, referTime?: number | Date) {
 	const date = time === undefined ? new Date() : new Date(time);
-	const endOfWeekTime = referTime ? getEndOfDay(referTime) : getEndOfDay();
+	const endOfWeekTime = referTime ? getEndOfWeek(referTime) : getEndOfWeek();
 	const timeLeft = getTimeLeftInMs(date, endOfWeekTime);
 
 	if (timeLeft === 0) return "Week ended";

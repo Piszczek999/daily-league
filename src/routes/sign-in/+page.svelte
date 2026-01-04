@@ -90,8 +90,8 @@
 				{#if error}
 					<p class="text-sm text-red-500">{error}</p>
 				{/if}
-				<Button type="submit" disabled={loading} variant="secondary">
-					{loading ? "Loading..." : mode === "signin" ? "Sign In" : "Sign Up"}
+				<Button type="submit" pending={loading} disabled={loading} variant="secondary">
+					{mode === "signin" ? "Sign In" : "Sign Up"}
 				</Button>
 			</form>
 			{#if mode === "signup"}

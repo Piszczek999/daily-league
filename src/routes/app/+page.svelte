@@ -14,6 +14,9 @@
 	const weeklyChallenges = $derived(
 		challenges.filter((ch) => challengeDetailsMap.get(ch.challengeId)!.mode === "weekly")
 	);
+	const buttonDisabled = $derived(
+		update.pending !== 0 || getTimeLeftInMs(time, SECOND * 10 + user.lastUpdatedAt) > 0
+	);
 
 	function getTimeLeftDaily() {
 		const timeLeft = getTimeLeftInMs(time, getEndOfDay(user.lastUpdatedAt));
@@ -50,16 +53,20 @@
 		return `${minutes}m ${seconds}s`;
 	}
 
-	function isButtonDisabled() {
-		return update.pending !== 0 || getTimeLeftInMs(time, SECOND * 10 + user.lastUpdatedAt) > 0;
-	}
-
 	$effect(() => {
 		const interval = setInterval(() => {
 			time = new Date();
 		}, 1000);
 
 		return () => clearInterval(interval);
+	});
+
+	let shouldUpdate = $derived(time.getTime() > getEndOfDay(user.lastUpdatedAt));
+	$effect(() => {
+		if (shouldUpdate) {
+			shouldUpdate = false;
+			update();
+		}
 	});
 </script>
 
@@ -85,7 +92,16 @@
 			<span class="text-center text-zinc-400">Time Left: {getTimeLeftWeekly()}</span>
 		</div>
 	</div>
-	<Button class="mt-10" disabled={isButtonDisabled()} onclick={async () => await update()}
-		>{getUpdateTimeLeft()}</Button
+	<Button
+		class="mt-10"
+		pending={!!update.pending}
+		disabled={buttonDisabled}
+		onclick={async () => await update()}
 	>
+		{#if buttonDisabled}
+			{getUpdateTimeLeft()}
+		{:else}
+			update
+		{/if}
+	</Button>
 </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { LoaderCircle } from "@lucide/svelte";
 	import { Button, mergeProps } from "bits-ui";
 	import { twMerge } from "tailwind-merge";
 
@@ -6,6 +7,7 @@
 	type Size = "sm" | "md" | "lg";
 
 	type Props = Button.RootProps & {
+		pending?: boolean;
 		variant?: Variant;
 		size?: Size;
 		fullWidth?: boolean;
@@ -13,6 +15,7 @@
 
 	let {
 		children,
+		pending = false,
 		variant = "default",
 		size = "md",
 		fullWidth = false,
@@ -30,8 +33,14 @@
 
 	const sizes: Record<Size, string> = {
 		sm: "px-2 py-1 text-xs",
-		md: "px-3 py-2 text-sm",
-		lg: "px-4 py-3 text-base"
+		md: "px-3 py-1.5 text-sm",
+		lg: "px-3 py-2 text-xl"
+	};
+
+	const loadingSizes: Record<Size, number> = {
+		sm: 16,
+		md: 20,
+		lg: 24
 	};
 
 	const baseStyles =
@@ -52,7 +61,9 @@
 </script>
 
 <Button.Root {...mergedProps}>
-	{#if children}
+	{#if pending}
+		<LoaderCircle class="mx-auto animate-spin" size={loadingSizes[size]} />
+	{:else if children}
 		{@render children()}
 	{:else}
 		Button

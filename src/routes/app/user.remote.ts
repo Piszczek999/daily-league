@@ -12,6 +12,23 @@ import { config } from "$lib/server/config";
 import { auth } from "$lib/server/auth";
 import { PLATFORM_TO_REGION } from "$lib/constants/regions";
 
+const userLocks = new Map<string, Promise<unknown>>();
+
+async function withUserLock<T>(userId: string, fn: () => Promise<T>): Promise<T | null> {
+	const existingLock = userLocks.get(userId);
+	if (existingLock) {
+		await existingLock.catch(() => {}); // Wait for existing operation
+		return null; // Abort this call
+	}
+
+	const lockPromise = fn().finally(() => {
+		userLocks.delete(userId);
+	});
+
+	userLocks.set(userId, lockPromise as Promise<void>);
+	return await lockPromise;
+}
+
 export const getUser = query(async () => {
 	console.log("getUser()");
 	const session = await auth.api.getSession({
@@ -50,8 +67,10 @@ export const updateRiotId = form(riotIdSchema, async (data) => {
 			region: PLATFORM_TO_REGION[regionResponse.region]
 		}
 	});
-	await challengeService.generateDailyChallenges(user);
-	await challengeService.generateWeeklyChallenges(user);
+	await Promise.all([
+		challengeService.generateDailyChallenges(user),
+		challengeService.generateWeeklyChallenges(user)
+	]);
 
 	getUser().set(user);
 	// await getChallenges().refresh();
@@ -61,34 +80,46 @@ export const updateRiotId = form(riotIdSchema, async (data) => {
 });
 
 export const update = command(async () => {
-	console.log("update()");
-	let user = await getUser();
+	const user = await getUser();
 	if (!user.puuid) error(400, "RiotId not linked to user");
 
-	if (Date.now() - user.lastUpdatedAt < config.updateCooldown) return;
+	const updatedUser = await withUserLock(user.id, async () => {
+		// Atomically check cooldown and claim the update
+		const currentUser = await prisma.user.findUnique({ where: { id: user.id } });
+		if (!currentUser) throw new Error("User not found");
 
-	if (getEndOfDay(user.lastUpdatedAt) < Date.now()) {
-		await challengeService.generateDailyChallenges(user);
-		if (getEndOfWeek(user.lastUpdatedAt) < Date.now()) {
-			await challengeService.generateWeeklyChallenges(user);
+		const timeSinceUpdate = Date.now() - currentUser.lastUpdatedAt;
+		if (timeSinceUpdate < config.updateCooldown) return null;
+
+		// Update timestamp immediately to prevent other requests
+		const updatedTimestamp = Date.now();
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { lastUpdatedAt: Date.now() }
+		});
+
+		// Generate challenges if day/week rolled over
+		if (getEndOfDay(currentUser.lastUpdatedAt) < updatedTimestamp) {
+			await challengeService.generateDailyChallenges(currentUser);
+			if (getEndOfWeek(currentUser.lastUpdatedAt) < updatedTimestamp) {
+				await challengeService.generateWeeklyChallenges(currentUser);
+			}
 		}
-	}
 
-	const allMatchIds = await matchService.getAllRelevantMatchIds(user);
-	console.log(allMatchIds);
-	if (allMatchIds.length !== 0) {
-		const allMatches = await matchService.getMatches(user.region, allMatchIds);
+		// Process new matches
+		const allMatchIds = await matchService.getAllRelevantMatchIds(currentUser);
+		if (allMatchIds.length > 0) {
+			const allMatches = await matchService.getMatches(currentUser.region, allMatchIds);
+			await challengeService.evaluateMany(currentUser, allMatches);
+		}
 
-		await challengeService.evaluateMany(user, allMatches);
-	}
-
-	user = await prisma.user.update({
-		where: { id: user.id },
-		data: { lastUpdatedAt: Date.now() }
-		// data: { lastUpdatedAt: Date.now(), xp: { increment: 10 } }
+		// Return fresh user data
+		return await prisma.user.findUnique({ where: { id: user.id } });
 	});
 
-	getUser().set(user);
+	if (!updatedUser) return;
+
+	getUser().set(updatedUser);
 	await getChallenges().refresh();
 });
 
@@ -105,37 +136,49 @@ export const getChallenges = query(async () => {
 });
 
 export const claimReward = command(z.string(), async (id) => {
-	let user = await getUser();
+	const user = await getUser();
 	if (!user.puuid) error(400, "RiotId not linked to user");
 
-	const challenge = await prisma.challenge.findFirst({ where: { id: id } });
-	if (!challenge) error(404, "challenge not found");
-	if (challenge.userId !== user.id) error(401, "invalid access to challenge");
-	if (!challenge.collectable) error(400, "challenge cant be collected");
+	const updatedUser = await withUserLock(user.id, async () => {
+		// Find and validate challenge
+		const challenge = await prisma.challenge.findFirst({
+			where: {
+				id: id,
+				userId: user.id,
+				collectable: true
+			}
+		});
 
-	const details = challengeDetailsMap.get(challenge.challengeId)!;
-	await prisma.challenge.update({
-		where: {
-			id: challenge.id
-		},
-		data: { collectable: false }
-	});
+		if (!challenge) error(404, "Challenge not found or not collectable");
 
-	let reward = challengeReward[details.difficulty];
-	reward *= details.mode === "weekly" ? 3 : 1;
-	user.xp += reward;
-	while (user.xp >= getRequiredXp(user.level)) {
-		user.xp -= getRequiredXp(user.level);
-		user.level += 1;
-	}
-	user = await prisma.user.update({
-		where: { id: user.id },
-		data: {
-			xp: user.xp,
-			level: user.level
+		// Mark as collected
+		await prisma.challenge.update({
+			where: { id: challenge.id },
+			data: { collectable: false }
+		});
+
+		// Calculate reward
+		const details = challengeDetailsMap.get(challenge.challengeId)!;
+		let reward = challengeReward[details.difficulty];
+		reward *= details.mode === "weekly" ? 3 : 1;
+
+		// Calculate new XP and level
+		let newXp = user.xp + reward;
+		let newLevel = user.level;
+		while (newXp >= getRequiredXp(newLevel)) {
+			newXp -= getRequiredXp(newLevel);
+			newLevel += 1;
 		}
+
+		// Update user
+		return await prisma.user.update({
+			where: { id: user.id },
+			data: { xp: newXp, level: newLevel }
+		});
 	});
 
-	getUser().set(user);
+	if (!updatedUser) return;
+
+	getUser().set(updatedUser);
 	await getChallenges().refresh();
 });

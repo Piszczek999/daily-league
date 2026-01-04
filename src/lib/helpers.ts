@@ -39,7 +39,7 @@ export function getEndOfWeek(timestamp?: number | Date) {
 	const date = timestamp === undefined ? new Date() : new Date(timestamp);
 
 	const day = date.getDay(); // Sunday = 0, Monday = 1
-	const diffToSunday = 7 - day;
+	const diffToSunday = day === 0 ? 0 : 7 - day;
 
 	date.setDate(date.getDate() + diffToSunday);
 	date.setHours(23, 59, 59, 999);

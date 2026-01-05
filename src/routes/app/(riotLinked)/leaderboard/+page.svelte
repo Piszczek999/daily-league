@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { LoaderCircle } from "@lucide/svelte";
-	import { getLeaderboard } from "../user.remote";
+	import { getLeaderboard } from "../../user.remote";
 	import UserAvatar from "$lib/components/UserAvatar.svelte";
 </script>
 

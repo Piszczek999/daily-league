@@ -10,7 +10,7 @@
 		SECOND
 	} from "$lib/helpers.js";
 	import { Trophy } from "@lucide/svelte";
-	import { getChallenges, getUser, update } from "./user.remote.js";
+	import { getChallenges, getUser, update } from "../user.remote.js";
 
 	let time = $state(new Date());
 	const user = $derived(await getUser());

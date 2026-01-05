@@ -2,7 +2,6 @@
 	import LevelProgressBar from "$lib/components/LevelProgressBar.svelte";
 	import UserPopover from "$lib/components/UserPopover.svelte";
 	import icon from "$lib/assets/logo.png";
-	import { Trophy } from "@lucide/svelte";
 
 	const { children } = $props();
 </script>

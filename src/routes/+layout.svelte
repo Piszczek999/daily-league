@@ -11,7 +11,5 @@
 </svelte:head>
 
 <Tooltip.Provider>
-	<div data-sveltekit-preload-data="off" data-sveltekit-preload-code="off">
-		{@render children()}
-	</div>
+	{@render children()}
 </Tooltip.Provider>

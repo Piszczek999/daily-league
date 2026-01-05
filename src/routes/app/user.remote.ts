@@ -204,6 +204,9 @@ export const claimReward = command(z.string(), async (id) => {
 });
 
 export const getLeaderboard = query(async () => {
+	const user = await getUser();
+	if (!user.puuid) error(400, "RiotId not linked to user");
+
 	return await prisma.user.findMany({
 		where: { profileIconId: { not: 0 } },
 		orderBy: [{ level: "desc" }, { xp: "desc" }],

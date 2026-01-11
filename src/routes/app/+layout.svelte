@@ -20,6 +20,6 @@
 	</div>
 </nav>
 
-<main class="flex-center min-h-screen flex-col pt-20">
+<main class="flex-center min-h-screen flex-col pt-40 md:pt-20">
 	{@render children()}
 </main>

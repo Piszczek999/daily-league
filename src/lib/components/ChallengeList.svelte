@@ -10,7 +10,7 @@
 </script>
 
 {#if challenges.length > 0}
-	<div class="grid grid-cols-3 gap-4 perspective-near">
+	<div class="grid grid-cols-2 gap-4 perspective-near sm:grid-cols-3">
 		{#each challenges as challenge, i}
 			<ChallengeCard size="lg" {challenge} delay={i * 100} />
 		{/each}

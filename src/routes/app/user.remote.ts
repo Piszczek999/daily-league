@@ -97,6 +97,7 @@ export const updateRiotId = form(riotIdSchema, async (data) => {
 });
 
 export const update = command(async () => {
+	console.log("update()");
 	const user = await getUser();
 	if (!user.puuid) error(400, "RiotId not linked to user");
 
@@ -141,6 +142,7 @@ export const update = command(async () => {
 });
 
 export const getChallenges = query(async () => {
+	console.log("getChallenges()");
 	const user = await getUser();
 	if (!user.puuid) error(400, "RiotId not linked to user");
 
@@ -153,6 +155,7 @@ export const getChallenges = query(async () => {
 });
 
 export const claimReward = command(z.string(), async (id) => {
+	console.log("claimReward()");
 	const user = await getUser();
 	if (!user.puuid) error(400, "RiotId not linked to user");
 
@@ -204,6 +207,7 @@ export const claimReward = command(z.string(), async (id) => {
 });
 
 export const getLeaderboard = query(async () => {
+	console.log("getLeaderboard()");
 	const user = await getUser();
 	if (!user.puuid) error(400, "RiotId not linked to user");
 
